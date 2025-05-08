@@ -1,0 +1,52 @@
+<div class="container py-4">
+    <h2 class="mb-4">Available Buses</h2>
+  
+    @for (item of serachData; track $index) {
+      <div class="card mb-4 shadow-sm rounded-4">
+        <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+  
+          <!-- Bus Details (left) -->
+          <div class="d-flex align-items-center mb-3 mb-md-0">
+            <i class="bi bi-bus-front me-2 fs-3 text-primary"></i>
+            <div>
+              <h5 class="mb-1">{{ item.busName }}</h5>
+              <small class="text-muted">{{ item.vendorName }}</small>
+              <div class="d-flex align-items-center mt-1">
+                <span class="badge bg-success me-1">4.5</span>
+                <span class="badge bg-info text-dark">Fast</span>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Times and Duration (center) -->
+          <div class="d-flex text-center mb-3 mb-md-0 gap-4 px-3">
+            <div class="time-block border-end pe-4">
+              <div class="text-muted mb-1">Departure</div>
+              <div><i class="bi bi-clock"></i> {{ item.departureTime | date: 'HH:mm:ss' }}</div>
+            </div>
+            <div class="time-block border-end pe-4">
+              <div class="text-muted mb-1">Duration</div>
+              <div><i class="bi bi-hourglass-split"></i> 8h 30m</div> <!-- Durée à calculer -->
+            </div>
+            <div class="time-block">
+              <div class="text-muted mb-1">Arrival</div>
+              <div><i class="bi bi-clock-history"></i> {{ item.arrivalTime | date: 'HH:mm:ss' }}</div>
+            </div>
+          </div>
+  
+          <!-- Price and Button (right) -->
+          <div class="d-flex align-items-center">
+            <div class="me-4 text-end">
+              <div><i class="bi bi-cash-coin"></i> {{ item.price }} DZD</div>
+              <small class="text-success">$ Best Price</small>
+            </div>
+            <button (click)="navigateToBooking(item.scheduleId)" class="btn btn-primary rounded-circle">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+  
+        </div>
+      </div>
+    }
+  </div>
+  
