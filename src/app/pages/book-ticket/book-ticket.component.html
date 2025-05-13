@@ -64,7 +64,17 @@
     </div>
 
     <div class="text-center mt-4">
-      <button class="btn btn-primary" (click)="bookTicketBooking()">Book ticket</button>
+         
+    @if(checkUSerLoggedIn()){ <button class="btn btn-primary" (click)="bookTicketBooking()">Book ticket</button>}
+        
+      @else {
+        <button class="btn btn-primary" (click)="openLoginModal()">Book ticket</button>
+  
+    
+      }
+       
+      <button class="btn btn-secondary ms-2" (click)="goBack()">Back</button>
+      
     </div>
   </div>
 </div>

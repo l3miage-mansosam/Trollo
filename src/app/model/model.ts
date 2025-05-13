@@ -88,11 +88,11 @@ export interface User {
   emailId: string;
   fullName: string;
   role: string;
-  createdDate: string;
+  createdDate: Date;
   password: string; // Optionnel car ne doit pas être stocké
   projectName: string;
   refreshToken: string;
-  refreshTokenExpiryTime: string;
+  refreshTokenExpiryTime: Date;
 }
 export class User {
   userId: number;
@@ -100,21 +100,52 @@ export class User {
   emailId: string;
   fullName: string;
   role: string;
-  createdDate: string; // ISO string format
+  createdDate: Date; // ISO string format
   password: string;
   projectName: string;
   refreshToken: string;
-  refreshTokenExpiryTime: string; // ISO string format
+  refreshTokenExpiryTime: Date; // ISO string format
   constructor() {
     this.userId = 0;
     this.userName = "";
     this.emailId = "";
     this.fullName = "";
     this.role = "";
-    this.createdDate = "";
+    this.createdDate = new Date();
     this.password = "";
-    this.projectName = "";
+    this.projectName = "BusBooking";
     this.refreshToken = "";
-    this.refreshTokenExpiryTime = "";
+    this.refreshTokenExpiryTime = new Date();
   }
+
+    
 }
+export class BusSchedule {
+  scheduleId: number;
+  vendorId: number;
+  busName: string;
+  busVehicleNo: string;
+  fromLocation: number;
+  toLocation: number;
+  departureTime: Date;  // ISO Date String
+  arrivalTime: Date;    // ISO Date String
+  scheduleDate: Date;   // ISO Date String
+  price: number;
+  totalSeats: number;
+
+  constructor() {
+    this.scheduleId = 0;
+    this.vendorId = 1378;
+    this.busName = "";
+    this.busVehicleNo = "";
+    this.fromLocation = 0;
+    this.toLocation = 0;
+    this.departureTime = new Date(),
+    this.arrivalTime= new Date(),
+    this.scheduleDate = new Date(),
+    this.price = 0;
+    this.totalSeats = 0;
+  }
+
+}
+

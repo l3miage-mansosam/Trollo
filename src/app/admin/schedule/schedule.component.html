@@ -1,0 +1,65 @@
+<div class="container mt-5">
+    <h2>Post a Bus Schedule</h2>
+    <form (ngSubmit)="submitSchedule()">
+      <div class="mb-3">
+        <label for="busName" class="form-label">Bus Name</label>
+        <input type="text" id="busName" class="form-control" [(ngModel)]="busSchedule.busName" name="busName" required>
+      </div>
+  
+      <div class="mb-3">
+        <label for="busVehicleNo" class="form-label">Bus Vehicle Number</label>
+        <input type="text" id="busVehicleNo" class="form-control" [(ngModel)]="busSchedule.busVehicleNo" name="busVehicleNo" required>
+      </div>
+  
+      <div class="col-12">
+        <label for="fromLocation" class="form-label">From</label>
+        <select id="fromLocation" name="fromLocationId" class="form-select" [(ngModel)]="busSchedule.fromLocation" required>
+          <option value="">-- Select Departure City --</option>
+          @for (item of locationList; track $index) {
+            <option [value]="item.locationId">{{ item.locationName }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- To Location -->
+      <div class="col-12">
+        <label for="toLocation" class="form-label">To</label>
+        <select id="toLocation" name="toLocationId" class="form-select" [(ngModel)]="busSchedule.toLocation" required>
+          <option value="">-- Select Destination City --</option>
+          @for (item of locationList; track $index) {
+            <option [value]="item.locationId">{{ item.locationName }}</option>
+          }
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="departureTime" class="form-label">Departure Time</label>
+        <input type="date"
+        id="journeyDate"
+        name="journeyDate"
+        class="form-control" class="form-control" [(ngModel)]="busSchedule.departureTime" name="departureTime" required>
+      </div>
+  
+      <div class="mb-3">
+        <label for="arrivalTime" class="form-label">Arrival Time</label>
+        <input type="date"
+        id="journeyDate"
+        name="journeyDate"
+        class="form-control" class="form-control" [(ngModel)]="busSchedule.arrivalTime" name="arrivalTime" required>
+      </div>
+  
+      <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" id="price" class="form-control" [(ngModel)]="busSchedule.price" name="price" required>
+      </div>
+  
+      <div class="mb-3">
+        <label for="totalSeats" class="form-label">Total Seats</label>
+        <input type="number" id="totalSeats" class="form-control" [(ngModel)]="busSchedule.totalSeats" name="totalSeats" required>
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Post Schedule</button>
+    </form>
+    <p class="text-danger mt-2">{{ errorMessage }}</p>
+  </div>
+  

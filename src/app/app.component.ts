@@ -4,10 +4,15 @@ import { RouterOutlet } from '@angular/router';
 import { User } from './model/model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
+//RouterModule
+// import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,CommonModule, FormsModule],
+  imports: [RouterOutlet,CommonModule, FormsModule,RouterModule
+  
+  ],
 
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
@@ -43,5 +48,12 @@ export class AppComponent   {
   }
   navigateRegister(): void {
     this.route.navigate(['/register']);
+  }
+  navigateVendorSchedule(): void { 
+    this.route.navigate(['/schedule']);
+  
+  }
+  navigateUserDashboard(): void {
+    
   }
 }
