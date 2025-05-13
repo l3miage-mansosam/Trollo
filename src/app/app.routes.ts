@@ -5,6 +5,8 @@ import { BookTicketComponent } from './pages/book-ticket/book-ticket.component';
 import { MyBookingsComponent } from './pages/my-bookings/my-bookings.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { ScheduleComponent } from './admin/schedule/schedule.component';
+import { BookingsComponent } from './admin/bookings/bookings.component';
 
 export const routes: Routes = [
 
@@ -45,5 +47,17 @@ export const routes: Routes = [
         path:'register',
         component:RegisterComponent
         },
+
+        {
+        path:'schedule',
+        component:ScheduleComponent
+        },
+        {
+            path:'bookings',
+            component:BookingsComponent
+          
+            }
+    
+
     
 ];

@@ -21,25 +21,31 @@ export class BookTicketComponent {
   activatedRoute = inject(ActivatedRoute);
   seatNumberList: number[] = [];
   selectedSeatsArray: IPassenger[] = [];
+  bookedSeats: number[] = [];
   bookTicket:IBusBooking = new IBusBooking();
     user: User = new User();
 
   constructor() {
+
     this.activatedRoute.params.subscribe((res:any) => {
-      const scheduleId = res.scheduleId;
+      const { scheduleId } = res;
       this.getBusDetails(scheduleId);
       this.bookTicket.scheduleId = scheduleId;
       this.bookTicket.bookingDate= new Date();
       const storedUser = localStorage.getItem('user');
-      console.log("User from local storage2: ", storedUser);
+      console.log("User from local storage now: ", storedUser);
       if (storedUser) {
         this.user = JSON.parse(storedUser);
-      
         this.bookTicket.custId = this.user.userId;
       }    
       this.bookTicket.bookingDate = new Date();
     }
-    )     
+    )    
+    this.activatedRoute.params.subscribe((res:any) => {
+      const { scheduleId } = res;
+      this.BookedSeats(scheduleId);
+    }
+    ) 
 
 }
 getBusDetails(scheduleId: number) {
@@ -72,16 +78,28 @@ this.selectedSeatsArray.push(newPassenger)
 
 }
 }
+checkUSerLoggedIn() {
+  const user = localStorage.getItem('user');
+  if (user) {
+    return true;
+  }
+  return false;
+}
 
-
+BookedSeats(scheduleId: number) {
+  this.searchService.getBookedSeats(scheduleId).subscribe((data: number[]) => {
+    this.bookedSeats = data;
+    console.log("bookedSeats",this.bookedSeats);
+  });
+}
 
 
 isSelected(seatNo: number): boolean {
   return this.selectedSeatsArray.some((passenger) => passenger.seatNo === seatNo);
 }
 isBooked(seatNo: number): boolean { 
-  return this.busDetails.totalSeats < seatNo;
-}
+ 
+return this.bookedSeats.includes(seatNo);}
 
 bookTicketBooking(){
   this.bookTicket.busBookingPassengers=this.selectedSeatsArray;
@@ -90,12 +108,17 @@ bookTicketBooking(){
     alert("ticket booked success")
 
   })
-
 }
-
-
-
-
-
+openLoginModal() {
+//avant de naviger vers la page de connexion, enregistrez l'URL actuelle dans le stockage local et
+//  aussi stocker les données du formulaire 
+const currentUrl = window.location.pathname;
+const redirectUrl = encodeURIComponent(currentUrl);
+  localStorage.setItem('redirectUrl', redirectUrl);
+window.location.href = '/login';
+}
+goBack() {
+  window.history.back();
+}
 
 }

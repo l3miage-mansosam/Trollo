@@ -1,19 +1,37 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-   
-    <a class="navbar-brand" href="#">BusBooking</a>
+    <a class="navbar-brand" href="#">
+      <img src="./assets/logo.png"  class="d-inline-block align-middle me-2" width="50" height="50" > 
+      BusBooking
+    </a>
+    
 
-    <div class="ms-auto">
-      <ng-container *ngIf="!isLoggedIn(); else loggedInTemplate">
-        <a class="btn btn-outline-primary me-2" (click)="navigateLogin()">Login</a>
-        <a class="btn btn-primary" (click)="navigateRegister()" >Register</a>
-      </ng-container>
-      
-      <ng-template #loggedInTemplate>
-        <span class="navbar-text me-3">Hello, {{ user.userName }}</span>
-        <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
-      </ng-template>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav ms-auto">
+        <ng-container *ngIf="!isLoggedIn(); else loggedInTemplate">
+          <a class="btn btn-outline-primary me-2 custom-btn" (click)="navigateLogin()">Login</a>
+          <a class="btn btn-primary custom-btn" (click)="navigateRegister()">Register</a>
+        </ng-container>
+
+        <ng-template #loggedInTemplate>
+          <div class="d-flex align-items-center">
+            <ng-container *ngIf="user.role === 'Vendor'">
+              <a class="nav-link" [routerLink]="['/schedule']">
+                <i class="bi bi-calendar-week"></i> Bus Schedule
+              </a>
+              <a class="nav-link" [routerLink]="['/bookings']">
+                <i class="bi bi-boxes"></i> Bookings
+              </a>
+            </ng-container>
+            <span class="navbar-text me-3">Hello, {{ user.userName }}</span>
+            <button class="btn btn-outline-danger custom-btn" (click)="logout()">Logout</button>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </nav>

@@ -19,11 +19,19 @@ export class LoginComponent {
 
   login(): void {
     console.log("login", this.userName, this.password);
+    const redirectUrl = localStorage.getItem('redirectUrl');
     this.searchService.loginUser({ userName: this.userName, password: this.password }).subscribe({
       next: (response) => {
         if (response.result) {
           localStorage.setItem('user', JSON.stringify(response.data));
-          this.router.navigate(['/']);
+          if (redirectUrl) {
+            console.log("redirectUrl", redirectUrl);
+            localStorage.removeItem('redirectUrl');
+      
+            window.location.href = decodeURIComponent(redirectUrl);       
+             } else {
+            this.router.navigateByUrl('/');
+          }
         } else {
           this.errorMessage = response.message;
         }

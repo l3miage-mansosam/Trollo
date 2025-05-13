@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IBusScheduleDetails,User,ApiResponse, IBusBooking} from '../model/model';
+import { IBusScheduleDetails,User,ApiResponse, IBusBooking,BusSchedule} from '../model/model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
   private apiUrl = 'https://api.freeprojectapi.com/api/BusBooking';
+  //https://projectapi.gerasim.in/api/BusBooking/
 
   constructor(private http: HttpClient) { }
 
@@ -33,6 +34,12 @@ export class SearchService {
   }
   createNewBooking(obj:IBusBooking){
     return this.http.post(`${this.apiUrl}/PostBusBooking`,obj)
+  }
+  getBookedSeats(scheduleId: number): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/getBookedSeats?shceduleId=${scheduleId}`);
+  }
+  createBusSchedule(obj:BusSchedule){
+    return this.http.post(`${this.apiUrl}/PostBusSchedule`,obj)
   }
 }
 

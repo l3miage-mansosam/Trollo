@@ -1,0 +1,64 @@
+/* Custom Navbar Styles */
+.navbar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Navbar Brand */
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #007bff !important;
+  }
+  
+  /* Alignement des éléments à droite */
+  .navbar-nav {
+    margin-left: 20px;
+  }
+  
+  /* Boutons */
+  .custom-btn {
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Survol des boutons */
+  .custom-btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+  
+  /* Bouton Login/Logout */
+  .btn-outline-danger {
+    border-color: #e74c3c;
+    color: #e74c3c;
+  }
+  
+  .btn-outline-danger:hover {
+    background-color: #e74c3c;
+    color: #fff;
+  }
+  
+  /* Espacement des icônes et des liens */
+
+  
+  /* Correction de la position du Logout */
+  .navbar-text {
+    font-size: 1rem;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 767px) {
+    .navbar-brand img {
+      height: 25px;
+    }
+  
+  
+  }
+  
+  .navbar-brand {
+    margin-left: -200px;
+  }
