@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: RoadRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%road`')]
 #[ORM\Index(name: 'IDX_City_Road_Start', columns: ['start_city_id'])]
 #[ORM\Index(name: 'IDX_City_Road_Arrived', columns: ['arrived_city_id'])]
 class Road
@@ -27,14 +26,14 @@ class Road
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?City $start_city_id = null;
+    private ?City $start_city = null;
 
     #[ORM\ManyToOne(inversedBy: 'roads')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]   
-    private ?City $arrived_city_id = null;
+    private ?City $arrived_city = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Assert\NotBlank()]
@@ -57,26 +56,26 @@ class Road
         return $this->id;
     }
 
-    public function getStartCityId(): ?City
+    public function getStartCity(): ?City
     {
-        return $this->start_city_id;
+        return $this->start_city;
     }
 
-    public function setStartCityId(?City $start_city_id): static
+    public function setStartCity(?City $start_city): static
     {
-        $this->start_city_id = $start_city_id;
+        $this->start_city = $start_city;
 
         return $this;
     }
 
-    public function getArrivedCityId(): ?City
+    public function getArrivedCity(): ?City
     {
-        return $this->arrived_city_id;
+        return $this->arrived_city;
     }
 
-    public function setArrivedCityId(?City $arrived_city_id): static
+    public function setArrivedCity(?City $arrived_city): static
     {
-        $this->arrived_city_id = $arrived_city_id;
+        $this->arrived_city = $arrived_city;
 
         return $this;
     }
@@ -105,7 +104,7 @@ class Road
     {
         if (!$this->sessions->contains($session)) {
             $this->sessions->add($session);
-            $session->setRoadId($this);
+            $session->setRoad($this);
         }
 
         return $this;
@@ -115,8 +114,8 @@ class Road
     {
         if ($this->sessions->removeElement($session)) {
             // set the owning side to null (unless already changed)
-            if ($session->getRoadId() === $this) {
-                $session->setRoadId(null);
+            if ($session->getRoad() === $this) {
+                $session->setRoad(null);
             }
         }
 

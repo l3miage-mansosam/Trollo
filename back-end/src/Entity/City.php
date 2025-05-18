@@ -11,7 +11,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%city`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_City_Name', columns: ['name', 'pays'])]
 #[UniqueEntity(fields: ['name', 'pays'], message: 'La ville à déjà était enregistrée pour ce pays.')]
 class City
@@ -86,7 +85,7 @@ class City
     {
         if (!$this->roads->contains($road)) {
             $this->roads->add($road);
-            $road->setStartCityId($this);
+            $road->setStartCity($this);
         }
 
         return $this;
@@ -96,8 +95,8 @@ class City
     {
         if ($this->roads->removeElement($road)) {
             // set the owning side to null (unless already changed)
-            if ($road->getStartCityId() === $this) {
-                $road->setStartCityId(null);
+            if ($road->getStartCity() === $this) {
+                $road->setStartCity(null);
             }
         }
 

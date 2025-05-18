@@ -11,7 +11,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%session`')]
 #[ORM\Index(name: 'IDX_Road_Session', columns: ['road_id'])]
 #[ORM\Index(name: 'IDX_Bus_Session', columns: ['bus_id'])]
 class Session
@@ -27,14 +26,14 @@ class Session
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?Road $road_id = null;
+    private ?Road $road = null;
 
     #[ORM\ManyToOne(inversedBy: 'sessions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?Bus $bus_id = null;
+    private ?Bus $bus = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
@@ -73,26 +72,26 @@ class Session
     }
 
 
-    public function getRoadId(): ?Road
+    public function getRoad(): ?Road
     {
-        return $this->road_id;
+        return $this->road;
     }
 
-    public function setRoadId(?Road $road_id): static
+    public function setRoad(?Road $road): static
     {
-        $this->road_id = $road_id;
+        $this->road = $road;
 
         return $this;
     }
 
-    public function getBusId(): ?Bus
+    public function getBus(): ?Bus
     {
-        return $this->bus_id;
+        return $this->bus;
     }
 
-    public function setBusId(?Bus $bus_id): static
+    public function setBus(?Bus $bus): static
     {
-        $this->bus_id = $bus_id;
+        $this->bus = $bus;
 
         return $this;
     }
@@ -133,7 +132,7 @@ class Session
     {
         if (!$this->seats->contains($seat)) {
             $this->seats->add($seat);
-            $seat->setSessionId($this);
+            $seat->setSession($this);
         }
 
         return $this;
@@ -143,8 +142,8 @@ class Session
     {
         if ($this->seats->removeElement($seat)) {
             // set the owning side to null (unless already changed)
-            if ($seat->getSessionId() === $this) {
-                $seat->setSessionId(null);
+            if ($seat->getSession() === $this) {
+                $seat->setSession(null);
             }
         }
 
@@ -163,7 +162,7 @@ class Session
     {
         if (!$this->bookings->contains($booking)) {
             $this->bookings->add($booking);
-            $booking->setSessionId($this);
+            $booking->setSession($this);
         }
 
         return $this;
@@ -173,8 +172,8 @@ class Session
     {
         if ($this->bookings->removeElement($booking)) {
             // set the owning side to null (unless already changed)
-            if ($booking->getSessionId() === $this) {
-                $booking->setSessionId(null);
+            if ($booking->getSession() === $this) {
+                $booking->setSession(null);
             }
         }
 

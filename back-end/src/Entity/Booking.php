@@ -13,7 +13,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%booking`')]
 #[Index(name: 'IDX_User_Booking', columns: ['user_id'])]
 #[Index(name: 'IDX_Session_Booking', columns: ['session_id'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_Booking_User_Session', columns: ['user_id', 'session_id'])]
@@ -31,14 +30,14 @@ class Booking
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?Session $session_id = null;
+    private ?Session $session = null;
 
     /**
      * @var Collection<int, Seat>
@@ -68,26 +67,26 @@ class Booking
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getSessionId(): ?Session
+    public function getSession(): ?Session
     {
-        return $this->session_id;
+        return $this->session;
     }
 
-    public function setSessionId(?Session $session_id): static
+    public function setSession(?Session $session): static
     {
-        $this->session_id = $session_id;
+        $this->session = $session;
 
         return $this;
     }
@@ -104,7 +103,7 @@ class Booking
     {
         if (!$this->seats->contains($seat)) {
             $this->seats->add($seat);
-            $seat->setBookingId($this);
+            $seat->setBooking($this);
         }
 
         return $this;
@@ -114,8 +113,8 @@ class Booking
     {
         if ($this->seats->removeElement($seat)) {
             // set the owning side to null (unless already changed)
-            if ($seat->getBookingId() === $this) {
-                $seat->setBookingId(null);
+            if ($seat->getBooking() === $this) {
+                $seat->setBooking(null);
             }
         }
 

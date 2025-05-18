@@ -9,7 +9,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%role`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_Role_Name', columns: ['name'])]
 #[UniqueEntity(fields: ['name'], message: 'Ce rôle est déjà existant')]
 class Role

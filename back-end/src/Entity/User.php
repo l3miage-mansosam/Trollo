@@ -15,7 +15,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%user`')]
 #[ORM\Index(name: 'IDX_User_Role', columns: ['role_id'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_User_Email', columns: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé par un autre utilisateur.')]
@@ -57,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?Role $role_id = null;
+    private ?Role $role = null;
 
     /**
      * @var Collection<int, Booking>
@@ -140,8 +139,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = ['ROLE_USER'];
 
-        if ($this->role_id instanceof Role) {
-            $name = strtoupper($this->role_id->getName());
+        if ($this->role instanceof Role) {
+            $name = strtoupper($this->role->getName());
 
             if (!str_starts_with($name, 'ROLE_')) {
                 $name = 'ROLE_' . $name;
@@ -153,14 +152,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function getRoleId(): ?Role
+    public function getRole(): ?Role
     {
-        return $this->role_id;
+        return $this->role;
     }
 
-    public function setRoleId(?Role $role_id): static
+    public function setRole(?Role $role): static
     {
-        $this->role_id = $role_id;
+        $this->role = $role;
 
         return $this;
     }
@@ -177,7 +176,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->bookings->contains($booking)) {
             $this->bookings->add($booking);
-            $booking->setUserId($this);
+            $booking->setUser($this);
         }
 
         return $this;
@@ -187,8 +186,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->bookings->removeElement($booking)) {
             // set the owning side to null (unless already changed)
-            if ($booking->getUserId() === $this) {
-                $booking->setUserId(null);
+            if ($booking->getUser() === $this) {
+                $booking->setUser(null);
             }
         }
 

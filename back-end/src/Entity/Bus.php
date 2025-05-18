@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: BusRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%bus`')]
 #[ORM\UniqueConstraint(name: 'UQ_Bus_Immatriculation', columns: ['immatriculation'])]
 #[UniqueEntity(fields: ['immatriculation'], message: 'L\'immatriculation est utilisée par un autre bus')]
 class Bus
@@ -123,7 +122,7 @@ class Bus
     {
         if (!$this->sessions->contains($session)) {
             $this->sessions->add($session);
-            $session->setBusId($this);
+            $session->setBus($this);
         }
 
         return $this;
@@ -133,8 +132,8 @@ class Bus
     {
         if ($this->sessions->removeElement($session)) {
             // set the owning side to null (unless already changed)
-            if ($session->getBusId() === $this) {
-                $session->setBusId(null);
+            if ($session->getBus() === $this) {
+                $session->setBus(null);
             }
         }
 

@@ -10,7 +10,6 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SeatRepository::class)]
-#[ORM\Table(name: '`%env(APP_TABLE_PREFIX)%seat`')]
 #[ORM\Index(name: 'IDX_Session_Seat', columns: ['session_id'])]
 #[ORM\Index(name: 'IDX_Booking_Seat', columns: ['booking_id'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_Seat_Number_Session', columns: ['number', 'session_id'])]
@@ -28,7 +27,7 @@ class Seat
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
-    private ?Session $session_id = null;
+    private ?Session $session = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
@@ -46,21 +45,21 @@ class Seat
     #[ORM\ManyToOne(inversedBy: 'seats')]
     #[ORM\JoinColumn(nullable: true)]
     #[Assert\Valid()]
-    private ?Booking $booking_id = null;
+    private ?Booking $booking = null;
 
     public function getId(): ?Ulid
     {
         return $this->id;
     }
 
-    public function getSessionId(): ?Session
+    public function getSession(): ?Session
     {
-        return $this->session_id;
+        return $this->session;
     }
 
-    public function setSessionId(?Session $session_id): static
+    public function setSession(?Session $session): static
     {
-        $this->session_id = $session_id;
+        $this->session = $session;
 
         return $this;
     }
@@ -89,14 +88,14 @@ class Seat
         return $this;
     }
 
-    public function getBookingId(): ?Booking
+    public function getBooking(): ?Booking
     {
-        return $this->booking_id;
+        return $this->booking;
     }
 
-    public function setBookingId(?Booking $booking_id): static
+    public function setBooking(?Booking $booking): static
     {
-        $this->booking_id = $booking_id;
+        $this->booking = $booking;
 
         return $this;
     }
