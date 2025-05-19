@@ -101,7 +101,7 @@ final class UserController extends AbstractController
         description: 'ID de l\'utilisateur',
         in: 'path',
         required: true,
-        schema: new OA\Schema(type: 'string', format: 'ulid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
+        schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\Response(
         response: 200,
@@ -124,7 +124,7 @@ final class UserController extends AbstractController
         description: 'ID de l\'utilisateur',
         in: 'path',
         required: true,
-        schema: new OA\Schema(type: 'string', format: 'ulid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
+        schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\RequestBody(
         description: 'Données de l\'utilisateur à mettre à jour',
@@ -185,7 +185,7 @@ final class UserController extends AbstractController
         description: 'ID de l\'utilisateur',
         in: 'path',
         required: true,
-        schema: new OA\Schema(type: 'string', format: 'ulid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
+        schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\Response(
         response: 204,

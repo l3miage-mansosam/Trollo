@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Role;
-use App\Repository\RoleRepository;
+use App\Entity\City;
+use App\Repository\CityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,9 +14,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle\Attribute\Model;
 
-#[Route('/api/roles', name: 'api.roles.')]
-#[OA\Tag(name: 'Roles')]
-final class RoleController extends AbstractController
+#[Route('/api/cities', name: 'api.cities.')]
+#[OA\Tag(name: 'Cities')]
+final class CityController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
@@ -26,17 +26,17 @@ final class RoleController extends AbstractController
     #[Route(name: 'index', methods: ['GET'])]
     #[OA\Response(
         response: 200,
-        description: 'Retourne la liste des rôles',
+        description: 'Retourne la liste des villes',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: Role::class, groups: ['role:show']))
+            items: new OA\Items(ref: new Model(type: City::class, groups: ['city:show']))
         )
     )]
-    public function index(RoleRepository $roleRepository): JsonResponse
+    public function index(CityRepository $cityRepository): JsonResponse
     {
-        $roles = $roleRepository->findAll();
+        $cities = $cityRepository->findAll();
         return new JsonResponse(
-            $this->serializer->serialize($roles, 'json'),
+            $this->serializer->serialize($cities, 'json', ['groups' => ['city:show']]),
             Response::HTTP_OK,
             [],
             true
@@ -45,14 +45,14 @@ final class RoleController extends AbstractController
 
     #[Route(name: 'create', methods: ['POST'])]
     #[OA\RequestBody(
-        description: 'Données du rôle',
+        description: 'Données de la ville',
         required: true,
-        content: new OA\JsonContent(ref: new Model(type: Role::class, groups: ['role:create']))
+        content: new OA\JsonContent(ref: new Model(type: City::class, groups: ['city:create']))
     )]
     #[OA\Response(
         response: 201,
-        description: 'Rôle créé',
-        content: new OA\JsonContent(ref: new Model(type: Role::class, groups: ['role:show']))
+        description: 'Ville créée',
+        content: new OA\JsonContent(ref: new Model(type: City::class, groups: ['city:show']))
     )]
     #[OA\Response(
         response: 400,
@@ -67,12 +67,12 @@ final class RoleController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            $role = $this->serializer->deserialize($request->getContent(), Role::class, 'json');
-            $entityManager->persist($role);
+            $city = $this->serializer->deserialize($request->getContent(), City::class, 'json');
+            $entityManager->persist($city);
             $entityManager->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($role, 'json'),
+                $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
                 Response::HTTP_CREATED,
                 [],
                 true
@@ -85,20 +85,20 @@ final class RoleController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     #[OA\Parameter(
         name: 'id',
-        description: 'ID du rôle',
+        description: 'ID de la ville',
         in: 'path',
         required: true,
         schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\Response(
         response: 200,
-        description: 'Retourne un rôle',
-        content: new OA\JsonContent(ref: new Model(type: Role::class, groups: ['role:show']))
+        description: 'Retourne une ville',
+        content: new OA\JsonContent(ref: new Model(type: City::class, groups: ['city:show']))
     )]
-    public function show(Role $role): JsonResponse
+    public function show(City $city): JsonResponse
     {
         return new JsonResponse(
-            $this->serializer->serialize($role, 'json'),
+            $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
             Response::HTTP_OK,
             [],
             true
@@ -108,39 +108,43 @@ final class RoleController extends AbstractController
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
     #[OA\Parameter(
         name: 'id',
-        description: 'ID du rôle',
+        description: 'ID de la ville',
         in: 'path',
         required: true,
         schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\RequestBody(
-        description: 'Données du rôle à mettre à jour',
+        description: 'Données de la ville à mettre à jour',
         required: true,
-        content: new OA\JsonContent(ref: new Model(type: Role::class, groups: ['role:edit']))
+        content: new OA\JsonContent(ref: new Model(type: City::class, groups: ['city:edit']))
     )]
     #[OA\Response(
         response: 200,
-        description: 'Rôle mis à jour',
-        content: new OA\JsonContent(ref: new Model(type: Role::class, groups: ['role:show']))
+        description: 'Ville mise à jour',
+        content: new OA\JsonContent(ref: new Model(type: City::class, groups: ['city:show']))
     )]
-    public function update(Request $request, Role $role, EntityManagerInterface $entityManager): JsonResponse
+    public function update(Request $request, City $city, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            $updatedRole = $this->serializer->deserialize(
-                $request->getContent(),
-                Role::class,
-                'json',
-                ['object_to_populate' => $role]
-            );
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+            if (isset($data['name'])) {
+                $city->setName($data['name']);
+            }
+            if (isset($data['pays'])) {
+                $city->setPays($data['pays']);
+            }
             
             $entityManager->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($updatedRole, 'json'),
+                $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
                 Response::HTTP_OK,
                 [],
                 true
             );
+        } catch (\JsonException $e) {
+            return new JsonResponse(['error' => 'Format JSON invalide : ' . $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -149,19 +153,19 @@ final class RoleController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     #[OA\Parameter(
         name: 'id',
-        description: 'ID du rôle',
+        description: 'ID de la ville',
         in: 'path',
         required: true,
         schema: new OA\Schema(type: 'string', format: 'uuid', example: '01H2XJWN8D8RJXPTH2FWVG6PKG')
     )]
     #[OA\Response(
         response: 204,
-        description: 'Rôle supprimé'
+        description: 'Ville supprimée'
     )]
-    public function delete(Role $role, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(City $city, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            $entityManager->remove($role);
+            $entityManager->remove($city);
             $entityManager->flush();
 
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
