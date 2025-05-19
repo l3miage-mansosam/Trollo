@@ -8,47 +8,93 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Index(name: 'IDX_User_Role', columns: ['role_id'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_User_Email', columns: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé par un autre utilisateur.')]
+#[OA\Schema(
+    title: 'User',
+    description: 'Entité représentant un utilisateur du système',
+    type: 'object'
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[OA\Property(
+        description: 'Identifiant unique de l\'utilisateur (ULID)',
+        type: 'string',
+        example: '01H2XJWN8D8RJXPTH2FWVG6PKG'
+    )]
+    #[Groups(['user:show'])]
     private ?Ulid $id = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Length(min: 3, max: 20)]
-    private ?string $last_name = null;
+    #[OA\Property(
+        description: 'Nom de famille de l\'utilisateur',
+        type: 'string',
+        maxLength: 20,
+        minLength: 3,
+        example: 'Dupont'
+    )]
+    #[Groups(['user:show', 'user:create', 'user:edit'])]
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Length(min: 3, max: 20)]
-    private ?string $first_name = null;
+    #[OA\Property(
+        description: 'Prénom de l\'utilisateur',
+        type: 'string',
+        maxLength: 20,
+        minLength: 3,
+        example: 'Jean'
+    )]
+    #[Groups(['user:show', 'user:create', 'user:edit'])]
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Email(message: "L'adresse email n'est pas valide.")]
     #[Assert\Length(min: 3, max: 180)]
+    #[OA\Property(
+        description: 'Adresse email de l\'utilisateur (unique)',
+        type: 'string',
+        format: 'email',
+        maxLength: 180,
+        example: 'jean.dupont@example.com'
+    )]
+    #[Groups(['user:show', 'user:create', 'user:edit'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Length(min: 6, max: 50)]
+    #[OA\Property(
+        description: 'Mot de passe de l\'utilisateur (haché)',
+        type: 'string',
+        format: 'password',
+        maxLength: 50,
+        minLength: 6
+    )]
+    #[Groups(['user:create', 'user:edit'])]
     private ?string $password = null;
 
     #[ORM\ManyToOne(targetEntity: Role::class)]
@@ -56,12 +102,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
+    #[OA\Property(
+        ref: new Model(type: Role::class),
+        description: 'Rôle de l\'utilisateur',
+        type: 'integer',
+    )]
+    #[Groups(['user:show', 'user:create', 'user:edit'])]
     private ?Role $role = null;
 
     /**
      * @var Collection<int, Booking>
      */
-    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'user', orphanRemoval: true)]
+    #[OA\Property(
+        description: 'Liste des réservations de l\'utilisateur',
+        type: 'array',
+        items: new OA\Items(ref: new Model(type: Booking::class))
+    )]
+    #[Groups(['user:show'])]
     private Collection $bookings;
 
     public function __construct()
@@ -76,24 +134,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(string $last_name): static
+    public function setLastName(string $lastName): static
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(string $first_name): static
+    public function setFirstName(string $firstName): static
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
@@ -196,6 +254,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString(): string
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->firstName . ' ' . $this->lastName;
     }
 }
