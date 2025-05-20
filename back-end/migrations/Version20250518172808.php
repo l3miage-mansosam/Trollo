@@ -14,7 +14,7 @@ final class Version20250518172808 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Création initiale du schéma de base de données avec les tables : trello_booking (réservations), trello_bus (bus), trello_city (villes), trello_road (trajets), trello_role (rôles), trello_seat (sièges), trello_session (sessions), trello_user (utilisateurs) et messenger_messages (messages). Inclut toutes les contraintes de clés étrangères et les index uniques nécessaires.';
     }
 
     public function up(Schema $schema): void
