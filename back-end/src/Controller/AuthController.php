@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -216,9 +216,7 @@ class AuthController extends AbstractController
         response: Response::HTTP_NO_CONTENT,
         description: 'Déconnexion réussie'
     )]
-    public function logout(): JsonResponse
+    public function logout(): void
     {
-        // La déconnexion sera gérée par le firewall Symfony
-        throw new \RuntimeException('Cette méthode ne devrait jamais être appelée');
     }
 }
