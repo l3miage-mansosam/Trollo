@@ -27,9 +27,12 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -62,7 +65,8 @@
               "buildTarget": "BusBooking:build:production"
             },
             "development": {
-              "buildTarget": "BusBooking:build:development"
+              "buildTarget": "BusBooking:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

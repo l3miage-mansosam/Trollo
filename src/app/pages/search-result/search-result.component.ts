@@ -37,6 +37,40 @@ export class SearchResultComponent {
     navigateToBooking(thisScheduleId: number) {
       this.router.navigate(['/book-ticket', thisScheduleId]);
     }
+getDuration(departureTime: Date | string, arrivalTime: Date | string): string {
+    const dep = new Date(departureTime).getTime();
+    const arr = new Date(arrivalTime).getTime();
+
+    // différence en millisecondes
+    let diffMs = arr - dep;
+    // prendre en compte passage minuit
+    if (diffMs < 0) {
+      diffMs += 24 * 60 * 60 * 1000;
+    }
+
+    // convertit en minutes totales
+    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+
+    // calcule jours, heures et minutes
+    const minsPerDay = 24 * 60;
+    const days = Math.floor(totalMinutes / minsPerDay);
+    const remainderMinutes = totalMinutes % minsPerDay;
+    const hours = Math.floor(remainderMinutes / 60);
+    const minutes = remainderMinutes % 60;
+
+    // construction de la chaîne
+    const parts: string[] = [];
+    if (days > 0) {
+      parts.push(`${days}jr`);
+    }
+    if (hours > 0 || days > 0) {
+      parts.push(`${hours}h`);
+    }
+    parts.push(`${minutes}m`);
+
+    return parts.join(' ');
+  }
+
 }
   
 

@@ -1,65 +1,219 @@
-<div class="container mt-5">
-    <h2>Post a Bus Schedule</h2>
-    <form (ngSubmit)="submitSchedule()">
-      <div class="mb-3">
-        <label for="busName" class="form-label">Bus Name</label>
-        <input type="text" id="busName" class="form-control" [(ngModel)]="busSchedule.busName" name="busName" required>
+<div class="container my-5">
+
+  <!-- Header + Toggle Button -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">
+      {{ showPostForm ? '📝 Post a New Bus Schedule' : '🚌 My Bus Schedules' }}
+    </h2>
+    <button class="btn btn-outline-primary" (click)="toggleView()">
+      {{ showPostForm ? 'View My Buses' : 'Post New Bus' }}
+    </button>
+  </div>
+
+  <!-- FORMULAIRE DE POST -->
+  <div *ngIf="showPostForm">
+    <div class="card shadow-lg rounded-4 p-4">
+      <form (ngSubmit)="submitSchedule()">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label for="busName" class="form-label fw-semibold">Bus Name</label>
+            <input type="text" id="busName" class="form-control" [(ngModel)]="busSchedule.busName" name="busName" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="busVehicleNo" class="form-label fw-semibold">Bus Vehicle Number</label>
+            <input type="text" id="busVehicleNo" class="form-control" [(ngModel)]="busSchedule.busVehicleNo" name="busVehicleNo" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="fromLocation" class="form-label fw-semibold">From</label>
+            <select id="fromLocation" name="fromLocationId" class="form-select" [(ngModel)]="busSchedule.fromLocation" required>
+              <option value="">-- Select Departure City --</option>
+              @for (item of locationList; track $index) {
+                <option [value]="item.locationId">{{ item.locationName }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label for="toLocation" class="form-label fw-semibold">To</label>
+            <select id="toLocation" name="toLocationId" class="form-select" [(ngModel)]="busSchedule.toLocation" required>
+              <option value="">-- Select Destination City --</option>
+              @for (item of locationList; track $index) {
+                <option [value]="item.locationId">{{ item.locationName }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label for="departureTime" class="form-label fw-semibold">Departure Time</label>
+            <input type="datetime-local" id="departureTime" class="form-control" [(ngModel)]="busSchedule.departureTime" name="departureTime" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="arrivalTime" class="form-label fw-semibold">Arrival Time</label>
+            <input type="datetime-local" id="arrivalTime" class="form-control" [(ngModel)]="busSchedule.arrivalTime" name="arrivalTime" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="price" class="form-label fw-semibold">Price (€)</label>
+            <input type="number" id="price" class="form-control" [(ngModel)]="busSchedule.price" name="price" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="totalSeats" class="form-label fw-semibold">Total Seats</label>
+            <input type="number" id="totalSeats" class="form-control" [(ngModel)]="busSchedule.totalSeats" name="totalSeats" required>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Post Schedule</button>
+        </div>
+        <p class="text-danger text-center mt-3">{{ errorMessage }}</p>
+      </form>
+    </div>
+  </div>
+<!-- LISTE DES BUS DU VENDEUR -->
+<div *ngIf="!showPostForm">
+  <div *ngFor="let bus of vendorBuses" class="card bus-card mb-4 p-4 shadow-sm rounded-4">
+    <div class="d-flex justify-content-between flex-column flex-md-row">
+      
+      <!-- Infos principales -->
+      <div class="mb-3 mb-md-0">
+        <h4 class="fw-bold text-dark mb-2">
+          🚌 {{ bus.busName }}
+          <span class="badge bg-secondary ms-2 fs-6">{{ bus.price }} €</span>
+        </h4>
+        <p class="mb-1"><strong>Vehicle No:</strong> {{ bus.busVehicleNo }}</p>
+        <p class="mb-1"><strong>Route:</strong> {{ bus.fromLocationName }} → {{ bus.toLocationName }}</p>
       </div>
-  
-      <div class="mb-3">
-        <label for="busVehicleNo" class="form-label">Bus Vehicle Number</label>
-        <input type="text" id="busVehicleNo" class="form-control" [(ngModel)]="busSchedule.busVehicleNo" name="busVehicleNo" required>
-      </div>
-  
-      <div class="col-12">
-        <label for="fromLocation" class="form-label">From</label>
-        <select id="fromLocation" name="fromLocationId" class="form-select" [(ngModel)]="busSchedule.fromLocation" required>
-          <option value="">-- Select Departure City --</option>
-          @for (item of locationList; track $index) {
-            <option [value]="item.locationId">{{ item.locationName }}</option>
-          }
-        </select>
+      
+      <!-- Horaires -->
+      <div class="text-md-end text-muted">
+        <p class="mb-1"><i class="bi bi-clock"></i> <strong>Departure:</strong> {{ bus.departureTime | date:'short' }}</p>
+        <p class="mb-1"><i class="bi bi-clock-history"></i> <strong>Arrival:</strong> {{ bus.arrivalTime | date:'short' }}</p>
+<p class="mb-1">
+  <i class="bi bi-person-fill"></i>
+  <strong>Total Seats:</strong>
+   {{ availableSeatsMap[bus.scheduleId] ?? '?' }}/{{ bus.totalSeats }}
+</p>        <!-- Actions -->
+        <div class="d-flex gap-2 justify-content-end mt-2">
+          <button class="btn btn-outline-primary btn-sm" (click)="editSchedule(bus.scheduleId)">
+            <i class="bi bi-pencil-square"></i> Edit
+          </button>
+          <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(bus.scheduleId)">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
       </div>
 
-      <!-- To Location -->
-      <div class="col-12">
-        <label for="toLocation" class="form-label">To</label>
-        <select id="toLocation" name="toLocationId" class="form-select" [(ngModel)]="busSchedule.toLocation" required>
-          <option value="">-- Select Destination City --</option>
-          @for (item of locationList; track $index) {
-            <option [value]="item.locationId">{{ item.locationName }}</option>
-          }
-        </select>
-      </div>
-  
-      <div class="mb-3">
-        <label for="departureTime" class="form-label">Departure Time</label>
-        <input type="date"
-        id="journeyDate"
-        name="journeyDate"
-        class="form-control" class="form-control" [(ngModel)]="busSchedule.departureTime" name="departureTime" required>
-      </div>
-  
-      <div class="mb-3">
-        <label for="arrivalTime" class="form-label">Arrival Time</label>
-        <input type="date"
-        id="journeyDate"
-        name="journeyDate"
-        class="form-control" class="form-control" [(ngModel)]="busSchedule.arrivalTime" name="arrivalTime" required>
-      </div>
-  
-      <div class="mb-3">
-        <label for="price" class="form-label">Price</label>
-        <input type="number" id="price" class="form-control" [(ngModel)]="busSchedule.price" name="price" required>
-      </div>
-  
-      <div class="mb-3">
-        <label for="totalSeats" class="form-label">Total Seats</label>
-        <input type="number" id="totalSeats" class="form-control" [(ngModel)]="busSchedule.totalSeats" name="totalSeats" required>
-      </div>
-  
-      <button type="submit" class="btn btn-primary">Post Schedule</button>
-    </form>
-    <p class="text-danger mt-2">{{ errorMessage }}</p>
+    </div>
   </div>
-  
+</div>
+</div>
+<!-- Modal for Edit Schedule -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1" aria-labelledby="editScheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editScheduleModalLabel">Edit Bus Schedule</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateSchedule()">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label for="editBusName" class="form-label fw-semibold">Bus Name</label>
+              <input type="text" id="editBusName" class="form-control" [(ngModel)]="busScheduleEdit.busName" name="editBusName" required>
+     
+            </div>
+
+            <div class="col-md-6">
+              <label for="editBusVehicleNo" class="form-label
+
+                fw-semibold">Bus Vehicle Number</label>
+              <input type="text" id="editBusVehicleNo" class="form-control" [(ngModel)]="busScheduleEdit.busVehicleNo" name="editBusVehicleNo" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editFromLocation" class="form-label fw-semibold">From</label>
+              <select id="editFromLocation" name="editFromLocationId" class="form-select" [(ngModel)]="busScheduleEdit.fromLocation" required>
+                <option value="">-- Select Departure City --</option>
+                @for (item of locationList; track $index) {
+                  <option [value]="item.locationId">{{ item.locationName }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="editToLocation" class="form-label fw-semibold">To</label>
+              <select id="editToLocation" name="editToLocationId" class="form-select" [(ngModel)]="busScheduleEdit.toLocation" required>
+                <option value="">-- Select Destination City --</option>
+                @for (item of locationList; track $index) {
+                  <option [value]="item.locationId">{{ item.locationName }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="editDepartureTime" class="form-label fw-semibold">Departure Time</label>
+              <input type="datetime-local" id="editDepartureTime" class="form-control" [(ngModel)]="busScheduleEdit.departureTime" name="editDepartureTime" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editArrivalTime" class="form-label fw-semibold">Arrival Time</label>
+              <input type="datetime-local" id="editArrivalTime" class="form-control" [(ngModel)]="busScheduleEdit.arrivalTime" name="editArrivalTime" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editPrice" class="form-label fw-semibold">Price (€)</label>
+              <input type="number" id="editPrice" class="form-control" [(ngModel)]="busScheduleEdit.price" name="editPrice" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editTotalSeats" class="form-label fw-semibold">Total Seats</label>
+              <input type="number" id="editTotalSeats" class="form-control" [(ngModel)]="busScheduleEdit.totalSeats" name="editTotalSeats" required>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Update Schedule</button>
+          </div>
+
+          <p class="text-danger text-center mt-3">{{ errorMessage }}</p>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for Delete Confirmation -->
+<div class="modal fade" id="deleteScheduleModal" tabindex="-1" aria-labelledby="deleteScheduleModalLabel" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteScheduleModalLabel">Delete Bus Schedule</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this bus schedule?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+    <button type="button"
+        class="d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#editScheduleModal"
+        #openEditModalBtn>
+</button>
+
+<!-- Ouvre le modal de suppression -->
+<button type="button"
+        class="d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteScheduleModal"
+        #openDeleteModalBtn>
+</button>
+</div>
+

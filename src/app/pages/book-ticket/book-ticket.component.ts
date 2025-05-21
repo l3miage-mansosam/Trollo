@@ -89,7 +89,6 @@ checkUSerLoggedIn() {
 BookedSeats(scheduleId: number) {
   this.searchService.getBookedSeats(scheduleId).subscribe((data: number[]) => {
     this.bookedSeats = data;
-    console.log("bookedSeats",this.bookedSeats);
   });
 }
 

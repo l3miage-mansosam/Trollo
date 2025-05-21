@@ -20,15 +20,15 @@ export interface ISearchBus {
     availableSeats: number;
     totalSeats: number;
     price: number;
-    arrivalTime: string;     
+    arrivalTime: Date;     
     scheduleId: number;
-    departureTime: string;    
+    departureTime: Date;    
     busName: string;
     busVehicleNo: string;
     fromLocationName: string;
     toLocationName: string;
     vendorName: string;
-    scheduleDate: string;     
+    scheduleDate: Date;     
     vendorId: number;
   }
   export interface IBusScheduleDetails {
@@ -38,9 +38,9 @@ export interface ISearchBus {
     busVehicleNo: string;
     fromLocation: number;
     toLocation: number;
-    departureTime: string; 
-    arrivalTime: string;   
-    scheduleDate: string;  
+    departureTime: Date; 
+    arrivalTime: Date;   
+    scheduleDate: Date;  
     price: number;
     totalSeats: number;
   }
@@ -88,11 +88,11 @@ export interface User {
   emailId: string;
   fullName: string;
   role: string;
-  createdDate: Date;
+  createdDate: string;
   password: string; // Optionnel car ne doit pas être stocké
   projectName: string;
   refreshToken: string;
-  refreshTokenExpiryTime: Date;
+  refreshTokenExpiryTime: string;
 }
 export class User {
   userId: number;
@@ -100,25 +100,52 @@ export class User {
   emailId: string;
   fullName: string;
   role: string;
-  createdDate: Date; // ISO string format
+  createdDate: string; // ISO string format
   password: string;
   projectName: string;
   refreshToken: string;
-  refreshTokenExpiryTime: Date; // ISO string format
+  refreshTokenExpiryTime: string; // ISO string format
   constructor() {
     this.userId = 0;
     this.userName = "";
     this.emailId = "";
     this.fullName = "";
     this.role = "";
-    this.createdDate = new Date();
+    this.createdDate = "";
     this.password = "";
-    this.projectName = "BusBooking";
+    this.projectName = "";
     this.refreshToken = "";
-    this.refreshTokenExpiryTime = new Date();
+    this.refreshTokenExpiryTime = "";
   }
 
-    
+  
+
+
+}
+export class Vendor{
+   userId: number;
+  userName: string;
+  emailId: string;
+  fullName: string;
+  role: string;
+  createdDate: string; // ISO string format
+  password: string;
+  projectName: string;
+  refreshToken: string;
+  refreshTokenExpiryTime: string; // ISO string format
+  constructor() {
+    this.userId = 0;
+    this.userName = "";
+    this.emailId = "";
+    this.fullName = "";
+    this.role = "";
+    this.createdDate = "";
+    this.password = "";
+    this.projectName = "";
+    this.refreshToken = "";
+    this.refreshTokenExpiryTime = "";
+  }
+
 }
 export class BusSchedule {
   scheduleId: number;
@@ -127,25 +154,23 @@ export class BusSchedule {
   busVehicleNo: string;
   fromLocation: number;
   toLocation: number;
-  departureTime: Date;  // ISO Date String
-  arrivalTime: Date;    // ISO Date String
-  scheduleDate: Date;   // ISO Date String
+  departureTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
+  arrivalTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
+  scheduleDate: Date; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   price: number;
   totalSeats: number;
 
   constructor() {
     this.scheduleId = 0;
-    this.vendorId = 1378;
+    this.vendorId = 0;
     this.busName = "";
     this.busVehicleNo = "";
     this.fromLocation = 0;
     this.toLocation = 0;
-    this.departureTime = new Date(),
-    this.arrivalTime= new Date(),
-    this.scheduleDate = new Date(),
+    this.departureTime = "";
+    this.arrivalTime = "";
+    this.scheduleDate = new Date();
     this.price = 0;
     this.totalSeats = 0;
   }
-
 }
-

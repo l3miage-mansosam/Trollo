@@ -7,6 +7,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ScheduleComponent } from './admin/schedule/schedule.component';
 import { BookingsComponent } from './admin/bookings/bookings.component';
+import { NewLocalisationComponent } from './admin/new-localisation/new-localisation.component';
+
 
 export const routes: Routes = [
 
@@ -56,6 +58,11 @@ export const routes: Routes = [
             path:'bookings',
             component:BookingsComponent
           
+            },
+            
+            {path:'new-localisation',
+                component:NewLocalisationComponent
+
             }
     
 

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg ">
   <div class="container">
     <a class="navbar-brand" href="#">
       <img src="./assets/logo.png"  class="d-inline-block align-middle me-2" width="50" height="50" > 
@@ -6,7 +6,7 @@
     </a>
     
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -17,23 +17,119 @@
           <a class="btn btn-primary custom-btn" (click)="navigateRegister()">Register</a>
         </ng-container>
 
-        <ng-template #loggedInTemplate>
-          <div class="d-flex align-items-center">
-            <ng-container *ngIf="user.role === 'Vendor'">
-              <a class="nav-link" [routerLink]="['/schedule']">
-                <i class="bi bi-calendar-week"></i> Bus Schedule
-              </a>
-              <a class="nav-link" [routerLink]="['/bookings']">
-                <i class="bi bi-boxes"></i> Bookings
-              </a>
-            </ng-container>
-            <span class="navbar-text me-3">Hello, {{ user.userName }}</span>
-            <button class="btn btn-outline-danger custom-btn" (click)="logout()">Logout</button>
-          </div>
-        </ng-template>
+<ng-template #loggedInTemplate>
+  <div class="d-flex align-items-center gap-3"> 
+    <ng-container *ngIf="user.role === 'Vendor'">
+      <a class="nav-link me-3" [routerLink]="['/schedule']">
+        <i class="bi bi-calendar-week me-1"></i> Bus Schedule
+      </a>
+      <a class="nav-link me-3" [routerLink]="['/bookings']">
+        <i class="bi bi-boxes me-1"></i> Bookings
+      </a>
+         <a class="nav-link me-3" [routerLink]="['/new-localisation']">
+        <i class="bi bi-geo-alt-fill me-1"></i> Add Location
+      </a>
+    </ng-container>
+    <span class="navbar-text me-3">Hello, {{ user.userName }}</span>
+    <button class="btn btn-outline-danger custom-btn ms-2" (click)="logout()">Logout</button>
+  </div>
+</ng-template>
       </div>
     </div>
   </div>
 </nav>
 
-<router-outlet></router-outlet>
+
+
+<ng-container *ngIf="isHomePage()">
+  <div class="hero-section text-white">
+    <div class="container py-5">
+      <h2>Book your journey now with the world's largest bus platform</h2>
+    </div>
+  </div>
+</ng-container>
+<div class="pt-">
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="isHomePage()">
+
+
+<div class="container py-4 pt-5">   
+  <h4 class="text-primary fw-bold mb-4">
+    <i class="bi bi-bus-front-fill me-2"></i>Top 5 Available Routes
+  </h4>
+
+  <div class="row g-4">
+    <div
+      class="col-md-6 col-lg-4"
+      *ngFor="let route of topRoutes"
+    >
+      <div class="card h-100 shadow-sm border-0 route-card hover-card" (click)="searchBusByName(route.fromLocationName, route.toLocationName, route.scheduleDate)" style="cursor: pointer;">
+        <div class="card-body">
+          <h5 class="card-title text-dark">
+            {{ route.fromLocationName }} → {{ route.toLocationName }}
+          </h5>
+          <p class="card-text mb-1">
+            <strong>Date:</strong> {{ route.scheduleDate | date:'mediumDate' }}
+          </p>
+          <p class="card-text">
+            <strong>Buses Available:</strong> {{ route.busCount }}
+          </p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0">
+          <button class="btn btn-outline-primary w-100 fw-semibold">View Buses</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+ <!---->
+<footer class="bg-dark text-white mt-5 pt-5 shadow-lg">
+  <div class="container">
+    <div class="row text-center text-md-start">
+
+      <!-- Logo & Description -->
+      <div class="col-md-4 mb-4 mb-md-0">
+        <h5 class="fw-bold"><i class="bi bi-bus-front-fill text-warning me-2"></i>BusBooking</h5>
+        <p class="small">
+          Your trusted platform for booking intercity bus tickets at the best prices.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4 mb-md-0">
+        <h6 class="fw-semibold mb-3">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a routerLink="/schedule" class="text-white text-decoration-none">🚌 Bus Schedule</a></li>
+          <li><a routerLink="/bookings" class="text-white text-decoration-none">🧾 My Bookings</a></li>
+          <li><a routerLink="/" class="text-white text-decoration-none">🏠 Home</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="col-md-4">
+        <h6 class="fw-semibold mb-3">Contact Us</h6>
+        <p class="small mb-1"><i class="bi bi-envelope-fill me-2"></i>supportbusbooking.com</p>
+        <p class="small"><i class="bi bi-geo-alt-fill me-2"></i>123 Main St, Travel City</p>
+        <div class="mt-2">
+          <a href="#" class="text-white me-3 fs-5"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-white me-3 fs-5"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="text-white fs-5"><i class="bi bi-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-light my-4" />
+
+    <div class="text-center small">
+      &copy; {{ currentYear }} BusBooking. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+
+</ng-container>

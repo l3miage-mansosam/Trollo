@@ -1,11 +1,14 @@
 import { Component,inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { BusSchedule ,Search} from '../../model/model';
+import { BusSchedule ,Search,ISearchBus} from '../../model/model';
 import { SearchService } from '../../service/search.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { OnInit } from '@angular/core';
+import { ViewChild, ElementRef } from '@angular/core';
+
+
 @Component({
   selector: 'app-schedule',
   imports: [CommonModule, FormsModule],
@@ -13,11 +16,25 @@ import { OnInit } from '@angular/core';
   styleUrl: './schedule.component.css'
 })
 export class ScheduleComponent implements OnInit {
+@ViewChild('openEditModalBtn') openEditModalBtn!: ElementRef;
+@ViewChild('openDeleteModalBtn') openDeleteModalBtn!: ElementRef;
   http= inject(HttpClient);
   locationList: any = [];
   router = inject(Router);
+   showPostForm = true
+   vendorBuses: ISearchBus[] = [];
+availableSeatsMap: { [key: number]: number | undefined } = {};
+
 busSchedule: BusSchedule = new BusSchedule();
+busScheduleEdit: BusSchedule = new BusSchedule();
  searchObj: Search = new Search();
+ selectedScheduleId: number = 0;
+
+
+ 
+ 
+
+
 constructor(private searchService: SearchService) {
   const localStorageData = localStorage.getItem('user');
   if (localStorageData) {
@@ -30,17 +47,18 @@ constructor(private searchService: SearchService) {
 
   this.busSchedule = {
     scheduleId: 0,
-    vendorId: 118,
+    vendorId: 424,
     busName: '',
     busVehicleNo: '',
     fromLocation: 0,
     toLocation: 0,
-    departureTime: new Date(),
-    arrivalTime: new Date(),
+    departureTime:"",
+    arrivalTime: "",
     scheduleDate: new Date(),
     price: 0,
     totalSeats: 0
   };
+ 
 }
 
   errorMessage: string = '';
@@ -57,6 +75,7 @@ constructor(private searchService: SearchService) {
       },
       error: () => {
         this.errorMessage = 'An error occurred while creating the bus schedule.';
+        
       }
     });
   
@@ -86,8 +105,8 @@ resetForm() {
     busVehicleNo: '',
     fromLocation: 0,
     toLocation: 0,
-    departureTime: new Date(),
-    arrivalTime: new Date(),
+    departureTime: "",
+    arrivalTime: "",
     scheduleDate: new Date(),
     price: 0,
     totalSeats: 0
@@ -105,5 +124,82 @@ getAllLocations() {
   }
   );
 }
+  toggleView() {
+    this.showPostForm = !this.showPostForm;
+      this.getVendorBuses();
+  }
+ getVendorBuses() {
+  this.searchService.getSchedulesByVendorId(this.busSchedule.vendorId).subscribe({
+    next: (schedules) => {
+      this.vendorBuses = schedules;
+
+      // Précharger les sièges disponibles
+      schedules.forEach((bus) => {
+        this.searchService.getBookedSeats(bus.scheduleId).subscribe((booked: number[]) => {
+          this.availableSeatsMap[bus.scheduleId] = bus.totalSeats - booked.length;
+        });
+      });
+    },
+    error: (err) => console.error('Error fetching vendor buses:', err)
+  });
+}
+
+editSchedule(scheduleId: number): void {
+  this.searchService.getBusScheduleById2(scheduleId).subscribe({
+    next: (schedule) => {
+      this.busScheduleEdit = schedule;
+      // Simule un clic sur le bouton pour ouvrir le modal
+      console.log('Schedule to edit:', this.busScheduleEdit);
+      this.openEditModalBtn.nativeElement.click();
+      console.log('Edit modal opened');
+    },
+    error: (err) => {
+      console.error('Failed to load schedule', err);
+    }
+  });
+}
+
+deleteSchedule(scheduleId: number): void {
+  this.selectedScheduleId = scheduleId;
+  this.openDeleteModalBtn.nativeElement.click(); // Ouvre le modal via le bouton caché
+}
+
+
+  getScheduleById(vendorId: number) {
+    this.searchService.getBusScheduleById2(vendorId).subscribe({
+      next: (response) => {
+        console.log('Schedule details:', response);
+        this.busScheduleEdit = response;
+      },
+      error: (error) => {
+        console.error('Error fetching schedule details:', error);
+      }
+    });
+  }
+  updateSchedule() {
+  
+   this.busScheduleEdit.scheduleId = 0;
+    console.log('Updating schedule with ID:', this.busScheduleEdit.scheduleId);
+    this.searchService.createBusSchedule(this.busScheduleEdit).subscribe({
+      next: (response) => {
+        console.log('Schedule updated successfully:', response);
+        this.getVendorBuses(); 
+      },
+      error: (error) => {
+        console.error('Error updating schedule:', error);
+      }
+    });
+  }
+confirmDelete(): void {
+  this.searchService.deleteSchedule(this.selectedScheduleId).subscribe({
+    next: () => {
+      this.getVendorBuses(); // Recharge les données
+    },
+    error: (err) => {
+      console.error('Failed to delete schedule', err);
+    }
+  });
+}
+
 
 }

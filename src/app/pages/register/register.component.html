@@ -62,14 +62,14 @@
             
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="companyName" class="form-label">Company Name</label>
-                <input type="text" id="companyName" class="form-control" [(ngModel)]="vendor.companyName" name="companyName" required>
+                <label for="companyName" class="form-label">Vendor Name</label>
+                <input type="text" id="companyName" class="form-control" [(ngModel)]="user.userName" name="companyName" required>
                 <div class="invalid-feedback">Please provide your company name.</div>
               </div>
               
               <div class="col-md-6">
-                <label for="companyEmail" class="form-label">Company Email</label>
-                <input type="email" id="companyEmail" class="form-control" [(ngModel)]="vendor.companyEmail" name="companyEmail" required>
+                <label for="companyEmail" class="form-label">Vendor Email</label>
+                <input type="email" id="companyEmail" class="form-control" [(ngModel)]="user.emailId" name="companyEmail" required>
                 <div class="invalid-feedback">Please provide a valid email.</div>
               </div>
               
@@ -77,17 +77,29 @@
                 <label for="companyPhone" class="form-label">Company Phone</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                  <input type="tel" id="companyPhone" class="form-control" [(ngModel)]="vendor.companyPhone" name="companyPhone" required>
+                  <input type="tel" id="companyPhone" class="form-control" [(ngModel)]="monVendor.contactNo" name="companyPhone" required>
                 </div>
                 <div class="invalid-feedback">Please provide a valid phone number.</div>
               </div>
               
               <div class="col-12">
-                <label for="companyAddress" class="form-label">Company Address</label>
-                <textarea id="companyAddress" class="form-control" [(ngModel)]="vendor.companyAddress" name="companyAddress" rows="2" required></textarea>
-                <div class="invalid-feedback">Please provide your company address.</div>
+             <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" id="fullName" class="form-control" [(ngModel)]="user.fullName" name="fullName" required>
+                <div class="invalid-feedback">Please provide your full name.</div>
               </div>
             </div>
+            <div class="col-md-6">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" [(ngModel)]="user.password" name="password" required minlength="6">
+                <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                <div class="form-text">At least 6 characters</div>
+              </div>
+              
+              <div class="col-md-6">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+                <div class="invalid-feedback">Passwords must match.</div>
+              </div>
 
             <div class="d-flex justify-content-between align-items-center mt-4">
               <button type="button" class="btn btn-outline-secondary" (click)="showUserFormFunction()">

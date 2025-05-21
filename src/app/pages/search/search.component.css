@@ -1,11 +1,4 @@
-.booking-container {
-  max-width: 700px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #bcb4b4;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+
 
 .booking-title {
   text-align: center;
@@ -30,6 +23,18 @@
 .input-group {
   display: flex;
   flex-direction: column;
+}
+.booking-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px); /* remonte ou descend */
+  width: 90%;
+  max-width: 1200px;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .input-group label {
