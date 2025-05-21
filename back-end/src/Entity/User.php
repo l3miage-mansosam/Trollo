@@ -80,21 +80,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         maxLength: 180,
         example: 'jean.dupont@example.com'
     )]
-    #[Groups(['user:show', 'user:create', 'user:edit'])]
+    #[Groups(['user:show', 'user:create', 'user:edit', 'user:login'])]
     private ?string $email = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 180)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
-    #[Assert\Length(min: 6, max: 50)]
+    #[Assert\Length(min: 6, max: 180)]
     #[OA\Property(
         description: 'Mot de passe de l\'utilisateur (haché)',
         type: 'string',
         format: 'password',
-        maxLength: 50,
-        minLength: 6
+        maxLength: 180,
+        minLength: 6,
+        example: 'My_password.123'
     )]
-    #[Groups(['user:create', 'user:edit'])]
+    #[Groups(['user:create', 'user:edit', 'user:login', 'user:reset-password', 'user:change-password'])]
     private ?string $password = null;
 
     #[ORM\ManyToOne(targetEntity: Role::class)]
