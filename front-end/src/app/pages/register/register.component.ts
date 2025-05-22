@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { SearchService } from '../../service/search.service';
 import { User, Vendor } from '../../model/model';
 
-import { NgModel } from '@angular/forms'; 
+import { NgModel } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule,CommonModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
-  
+
 })
 export class RegisterComponent {
   user: User = new User();
@@ -30,7 +30,7 @@ export class RegisterComponent {
   vendorId: 0,
   vendorName: this.user.userId,
   contactNo: '',
-  emailId: this.user.emailId,
+  emailId: this.user.email,
 };
 
   registerUser(): void {
@@ -64,7 +64,7 @@ export class RegisterComponent {
 
           this.router.navigate(['/login']);
         } else {
-          
+
           this.errorMessage = response.message;
         }
       },

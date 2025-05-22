@@ -5,36 +5,36 @@
         <div class="card-header bg-primary text-white">
           <h2 class="h4 mb-0">Register</h2>
         </div>
-        
+
         <div class="card-body">
           <!-- User Registration Form -->
           <form *ngIf="!showVendorForm" (ngSubmit)="registerUser()" class="needs-validation" novalidate>
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="userName" class="form-label">Username</label>
-                <input type="text" id="userName" class="form-control" [(ngModel)]="user.userName" name="userName" required>
+                <input type="text" id="userName" class="form-control" [(ngModel)]="user.firstName" name="userName" required>
                 <div class="invalid-feedback">Please choose a username.</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="emailId" class="form-label">Email</label>
-                <input type="email" id="emailId" class="form-control" [(ngModel)]="user.emailId" name="emailId" required>
+                <input type="email" id="emailId" class="form-control" [(ngModel)]="user.email" name="emailId" required>
                 <div class="invalid-feedback">Please provide a valid email.</div>
               </div>
-              
+
               <div class="col-12">
                 <label for="fullName" class="form-label">Full Name</label>
                 <input type="text" id="fullName" class="form-control" [(ngModel)]="user.fullName" name="fullName" required>
                 <div class="invalid-feedback">Please provide your full name.</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" class="form-control" [(ngModel)]="user.password" name="password" required minlength="6">
                 <div class="invalid-feedback">Password must be at least 6 characters.</div>
                 <div class="form-text">At least 6 characters</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="confirmPassword" class="form-label">Confirm Password</label>
                 <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required>
@@ -59,20 +59,20 @@
           <!-- Vendor Registration Form -->
           <form *ngIf="showVendorForm" (ngSubmit)="registerVendor()" class="needs-validation" novalidate>
             <h3 class="h5 mb-4 text-center">Vendor Registration</h3>
-            
+
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="companyName" class="form-label">Vendor Name</label>
-                <input type="text" id="companyName" class="form-control" [(ngModel)]="user.userName" name="companyName" required>
+                <input type="text" id="companyName" class="form-control" [(ngModel)]="user.firstName" name="companyName" required>
                 <div class="invalid-feedback">Please provide your company name.</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="companyEmail" class="form-label">Vendor Email</label>
-                <input type="email" id="companyEmail" class="form-control" [(ngModel)]="user.emailId" name="companyEmail" required>
+                <input type="email" id="companyEmail" class="form-control" [(ngModel)]="user.email" name="companyEmail" required>
                 <div class="invalid-feedback">Please provide a valid email.</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="companyPhone" class="form-label">Company Phone</label>
                 <div class="input-group">
@@ -81,7 +81,7 @@
                 </div>
                 <div class="invalid-feedback">Please provide a valid phone number.</div>
               </div>
-              
+
               <div class="col-12">
              <label for="fullName" class="form-label">Full Name</label>
                 <input type="text" id="fullName" class="form-control" [(ngModel)]="user.fullName" name="fullName" required>
@@ -94,7 +94,7 @@
                 <div class="invalid-feedback">Password must be at least 6 characters.</div>
                 <div class="form-text">At least 6 characters</div>
               </div>
-              
+
               <div class="col-md-6">
                 <label for="confirmPassword" class="form-label">Confirm Password</label>
                 <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required>

@@ -1,13 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, scheduled } from 'rxjs';
-import { IBusScheduleDetails,User,ApiResponse, IBusBooking,BusSchedule, Vendor,ISearchBus} from '../model/model';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {
+  ApiResponse,
+  ApiResponseLogin,
+  BusSchedule,
+  IBusBooking,
+  IBusScheduleDetails,
+  ISearchBus,
+  User
+} from '../model/model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
   private apiUrl = 'https://api.freeprojectapi.com/api/BusBooking';
+  private apiUrlSymfony = 'http://localhost:8000/api';
 
 
   constructor(private http: HttpClient) { }
@@ -22,16 +31,26 @@ export class SearchService {
   }
   postNewUser(userObj:any){
     return this.http.post<any>('https://api.freeprojectapi.com/api/BusBooking/AddNewUser', userObj);
-    
+
   }
 
   registerUser(userObj: User): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(`${this.apiUrl}/AddNewUser`, userObj);
   }
 
-  loginUser(credentials: { userName: string, password: string }): Observable<ApiResponse<User>> {
-    return this.http.post<ApiResponse<User>>(`${this.apiUrl}/login`, credentials);
+  loginUser(credentials: { email: string, password: string }): Observable<ApiResponseLogin<any>> {
+    console.log('credentials', credentials);
+    return this.http.post<ApiResponseLogin<any>>(`${this.apiUrlSymfony}/login`, credentials) ;
   }
+
+  getUserByToken(token: string): Observable<User> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get<User>(`${this.apiUrlSymfony}/me`, { headers });
+  }
+
   createNewBooking(obj:IBusBooking){
     return this.http.post(`${this.apiUrl}/PostBusBooking`,obj)
   }
@@ -45,14 +64,14 @@ export class SearchService {
   return this.http.put<ApiResponse<null>>(`${this.apiUrl}/PutBusSchedule`, obj);
 }
   registerVendor(userObj: User): Observable<ApiResponse<null>> {
-    
+
     return this.http.post<ApiResponse<null>>(`${this.apiUrl}/PostBusVendor`, userObj);
   }
 
   postBusVendor(obj:any){
     return this.http.post(`${this.apiUrl}/PostBusVendor`,obj)
   }
- 
+
 getSchedulesByVendorId(vendorId: number): Observable<ISearchBus[]> {
   return this.http.get<ISearchBus[]>(`${this.apiUrl}/GetBusSchedules?vendorId=${vendorId}`);
 }

@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-lg ">
   <div class="container">
     <a class="navbar-brand" href="#">
-      <img src="./assets/logo.png"  class="d-inline-block align-middle me-2" width="50" height="50" > 
+      <img src="./assets/logo.png"  class="d-inline-block align-middle me-2" width="50" height="50" >
       BusBooking
     </a>
-    
+
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -18,8 +18,8 @@
         </ng-container>
 
 <ng-template #loggedInTemplate>
-  <div class="d-flex align-items-center gap-3"> 
-    <ng-container *ngIf="user.role === 'Vendor'">
+  <div class="d-flex align-items-center gap-3">
+    <ng-container *ngIf="user.role.name === 'ADMIN'">
       <a class="nav-link me-3" [routerLink]="['/schedule']">
         <i class="bi bi-calendar-week me-1"></i> Bus Schedule
       </a>
@@ -30,7 +30,7 @@
         <i class="bi bi-geo-alt-fill me-1"></i> Add Location
       </a>
     </ng-container>
-    <span class="navbar-text me-3">Hello, {{ user.userName }}</span>
+    <span class="navbar-text me-3">Hello, {{ user.firstName }}</span>
     <button class="btn btn-outline-danger custom-btn ms-2" (click)="logout()">Logout</button>
   </div>
 </ng-template>
@@ -55,7 +55,7 @@
 <ng-container *ngIf="isHomePage()">
 
 
-<div class="container py-4 pt-5">   
+<div class="container py-4 pt-5">
   <h4 class="text-primary fw-bold mb-4">
     <i class="bi bi-bus-front-fill me-2"></i>Top 5 Available Routes
   </h4>
