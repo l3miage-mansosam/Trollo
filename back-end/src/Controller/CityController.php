@@ -36,7 +36,12 @@ final class CityController extends AbstractController
     {
         $cities = $cityRepository->findAll();
         return new JsonResponse(
-            $this->serializer->serialize($cities, 'json', ['groups' => ['city:show']]),
+            $this->serializer->serialize([
+                    'success' => true,
+                    'message' => 'Villes récupérées avec succès',
+                    'data' => $cities,
+                ]
+                , 'json', ['groups' => ['city:show']]),
             Response::HTTP_OK,
             [],
             true
@@ -72,7 +77,12 @@ final class CityController extends AbstractController
             $entityManager->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
+                $this->serializer->serialize([
+                        'success' => true,
+                        'message' => 'Ville créé avec succès',
+                        'data' => $city,
+                    ]
+                    , 'json', ['groups' => ['city:show']]),
                 Response::HTTP_CREATED,
                 [],
                 true
@@ -98,7 +108,12 @@ final class CityController extends AbstractController
     public function show(City $city): JsonResponse
     {
         return new JsonResponse(
-            $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
+            $this->serializer->serialize([
+                    'success' => true,
+                    'message' => 'Ville récupéré avec succès',
+                    'data' => $city
+                ]
+                , 'json', ['groups' => ['city:show']]),
             Response::HTTP_OK,
             [],
             true
@@ -138,7 +153,12 @@ final class CityController extends AbstractController
             $entityManager->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($city, 'json', ['groups' => ['city:show']]),
+                $this->serializer->serialize([
+                        'success' => true,
+                        'message' => 'Ville mis à jour avec succès',
+                        'data' => $city
+                    ]
+                    , 'json', ['groups' => ['city:show']]),
                 Response::HTTP_OK,
                 [],
                 true

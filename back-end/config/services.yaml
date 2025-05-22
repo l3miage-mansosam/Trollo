@@ -27,9 +27,3 @@ services:
             $prefix: '%env(APP_TABLE_PREFIX)%'
         tags:
             - { name: doctrine.event_listener, event: loadClassMetadata }
-
-    App\Security\CustomAuthenticationSuccessHandler:
-        arguments:
-            $jwtManager: '@lexik_jwt_authentication.jwt_manager'
-        tags:
-            - { name: 'lexik_jwt_authentication.security.authentication.success_handler' }
