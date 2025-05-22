@@ -60,8 +60,43 @@ class AuthController extends AbstractController
             ]
         )
     )]
-    public function login(): void
+    #[Route('/login', name: 'login', methods: ['POST'])]
+    public function login(Request $request): JsonResponse
     {
+        // Simulez ici les étapes nécessaires pour la connexion :
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+
+        // Validation basique des champs
+        if (!$email || !$password) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Les identifiants sont requis'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Authentification fictive - à remplacer par la logique réelle
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$user || !$this->passwordHasher->isPasswordValid($user, $password)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Identifiants invalides'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Génération du token JWT - remplacez par votre logique réelle de JWT
+        $token = 'abc.def.ghi'; // Ceci doit être généré dynamiquement, par exemple avec LexikJWTAuthenticationBundle
+
+        // Retour de la réponse structurée
+        return $this->json([
+            'success' => true,
+            'message' => 'Connexion réussie',
+            'data' => [
+                'token' => $token
+            ]
+        ], Response::HTTP_OK);
     }
 
 
