@@ -34,8 +34,8 @@ export class SearchService {
 
   }
 
-  registerUser(userObj: User): Observable<ApiResponse<null>> {
-    return this.http.post<ApiResponse<null>>(`${this.apiUrl}/AddNewUser`, userObj);
+  registerUser(userObj: object): Observable<ApiResponse<User>> {
+    return this.http.post<ApiResponse<User>>(`${this.apiUrlSymfony}/register`, userObj);
   }
 
   loginUser(credentials: { email: string, password: string }): Observable<ApiResponseLogin<any>> {

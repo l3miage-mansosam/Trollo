@@ -91,31 +91,34 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber?: string;
   password: string;
   fullName: string;
   role: {id:string,name:string};
-  createdDate: string;
-  projectName: string;
-  refreshToken: string;
-  refreshTokenExpiryTime: string;
+  createdDate?: string;
+  projectName?: string;
+  refreshToken?: string;
+  refreshTokenExpiryTime?: string;
 }
 export class User {
   userId: string;
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber?: string;
   password: string;
   fullName: string;
   role: {id:string,name:string};
-  createdDate: string; // ISO string format
-  projectName: string;
-  refreshToken: string;
-  refreshTokenExpiryTime: string; // ISO string format
+  createdDate?: string;
+  projectName?: string;
+  refreshToken?: string;
+  refreshTokenExpiryTime?: string;
   constructor() {
     this.userId = "";
     this.firstName = "";
     this.lastName = "";
     this.email = "";
+    this.phoneNumber = "";
     this.password = "";
     this.fullName = "";
     this.role = {id:"",name:""};
@@ -124,10 +127,6 @@ export class User {
     this.refreshToken = "";
     this.refreshTokenExpiryTime = "";
   }
-
-
-
-
 }
 export class Vendor{
    userId: number;

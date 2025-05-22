@@ -123,7 +123,7 @@ class AuthController extends AbstractController
     )]
     public function me(#[CurrentUser] User $user): JsonResponse
     {
-        return $this->json($user);
+        return $this->json($user, Response::HTTP_OK, [], ['groups' => ['user:show']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
@@ -178,7 +178,7 @@ class AuthController extends AbstractController
 
             // Vérif rôle
             $roleId = $data['roleId'] ?? null;
-            $role = $roleId ? $roleRepository->find($roleId) : null;
+            $role = $roleId ? $roleRepository->find($roleId) : $roleRepository->find('01JVW7BX671PZVC52DN3J5P7KE');
 
             if (!$role) {
                 return $this->json([
@@ -224,7 +224,11 @@ class AuthController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json(
-                $user,
+                [
+                    'success' => true,
+                    'message' => 'Account create successful',
+                    'data' => $this->serializer->serialize($user, 'json', ['groups' => ['user:show']])
+                ],
                 Response::HTTP_CREATED,
                 [],
                 ['groups' => ['user:show']]

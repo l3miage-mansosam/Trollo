@@ -27,19 +27,26 @@ export class RegisterComponent {
 
   }
    monVendor: any = {
-  vendorId: 0,
-  vendorName: this.user.userId,
-  contactNo: '',
-  emailId: this.user.email,
-};
+    vendorId: 0,
+    vendorName: this.user.userId,
+    contactNo: '',
+    emailId: this.user.email,
+  };
+
+  myUser: any = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+  }
 
   registerUser(): void {
-    this.searchService.registerUser(this.user).subscribe({
+    console.log("user", this.myUser);
+    this.searchService.registerUser(this.myUser).subscribe({
       next: (response) => {
-        if (response.result) {
+        if (response.data) {
           this.router.navigate(['/login']);
         } else {
-          console.log("user", this.user);
           console.log("response", response);
           this.errorMessage = response.message;
         }
