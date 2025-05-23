@@ -87,7 +87,7 @@ class AuthController extends AbstractController
         }
 
         // Génération du token JWT - remplacez par votre logique réelle de JWT
-        $token = 'abc.def.ghi'; // Ceci doit être généré dynamiquement, par exemple avec LexikJWTAuthenticationBundle
+        $token = 'abc.def.ghi';
 
         // Retour de la réponse structurée
         return $this->json([
@@ -123,7 +123,7 @@ class AuthController extends AbstractController
     )]
     public function me(#[CurrentUser] User $user): JsonResponse
     {
-        return $this->json($user, Response::HTTP_OK, [], ['groups' => ['user:show']]);
+        return $this->json($user, Response::HTTP_OK, [], ['groups' => ['user:show', 'role:show', 'booking:show']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
@@ -152,7 +152,7 @@ class AuthController extends AbstractController
                     example: [
                         'email' => ['Cet email est déjà utilisé.'],
                         'password' => ['Le mot de passe doit contenir au moins 6 caractères.'],
-                        'roleId' => ['Le rôle spécifié n\'existe pas.']
+                        'role' => ['Le rôle spécifié n\'existe pas.']
                     ]
                 )
             ]
@@ -177,13 +177,13 @@ class AuthController extends AbstractController
             }
 
             // Vérif rôle
-            $roleId = $data['roleId'] ?? null;
-            $role = $roleId ? $roleRepository->find($roleId) : $roleRepository->find('01JVW7BX671PZVC52DN3J5P7KE');
+            $role = $data['role'] ?? null;
+            $role = $role ? $roleRepository->findOneBy(['name'=> $role]) : $roleRepository->findOneBy(['name'=> 'USER']);;
 
             if (!$role) {
                 return $this->json([
                     'errors' => [
-                        'roleId' => ['Le rôle spécifié n\'existe pas.']
+                        'role' => ['Le rôle spécifié n\'existe pas.']
                     ]
                 ], Response::HTTP_BAD_REQUEST);
             }
@@ -212,14 +212,12 @@ class AuthController extends AbstractController
                 return $this->json(['errors' => $errorsArray], Response::HTTP_BAD_REQUEST);
             }
 
-            // Hash mot de passe
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
                 $user->getPassword()
             );
             $user->setPassword($hashedPassword);
 
-            // Persist
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 

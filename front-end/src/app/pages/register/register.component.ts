@@ -26,12 +26,13 @@ export class RegisterComponent {
   constructor(private searchService: SearchService, private router: Router) {
 
   }
-   monVendor: any = {
-    vendorId: 0,
-    vendorName: this.user.userId,
-    contactNo: '',
-    emailId: this.user.email,
-  };
+   /*myAdmin: any = {
+     email: '',
+     firstName: '',
+     lastName: '',
+     password: '',
+     role: 'ADMIN',
+  };*/
 
   myUser: any = {
     email: '',
@@ -59,16 +60,10 @@ export class RegisterComponent {
    registerVendor(): void {
           console.log("vendor", this.user);
 
-    this.searchService.registerVendor(this.user).subscribe({
+    this.searchService.registerUser({...this.myUser,role: 'ADMIN'}).subscribe({
       next: (response) => {
-        if (response.result) {
-          this.searchService.postBusVendor(this.monVendor).subscribe({
-            next: (response) => {
-              localStorage.setItem('monVendor', JSON.stringify(this.monVendor));
-              console.log("response", response);
-            }
-          });
-
+        if (response.data) {
+          console.log('reponse:',response);
           this.router.navigate(['/login']);
         } else {
 

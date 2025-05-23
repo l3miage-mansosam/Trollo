@@ -65,7 +65,7 @@ export class SearchService {
 }
   registerVendor(userObj: User): Observable<ApiResponse<null>> {
 
-    return this.http.post<ApiResponse<null>>(`${this.apiUrl}/PostBusVendor`, userObj);
+    return this.http.post<ApiResponse<null>>(`${this.apiUrl}/register`, userObj);
   }
 
   postBusVendor(obj:any){
