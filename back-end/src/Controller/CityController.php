@@ -82,7 +82,7 @@ final class CityController extends AbstractController
                         'message' => 'Ville créé avec succès',
                         'data' => $city,
                     ]
-                    , 'json', ['groups' => ['city:show']]),
+                    , 'json', ['groups' => ['city:show', 'road:show']]),
                 Response::HTTP_CREATED,
                 [],
                 true

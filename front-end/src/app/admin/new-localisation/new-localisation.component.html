@@ -5,12 +5,12 @@
     <div class="row g-3">
       <div class="col-md-6">
         <label for="locationName" class="form-label fw-semibold">Location Name</label>
-        <input type="text" id="locationName" [(ngModel)]="locationName" name="locationName" class="form-control" required>
+        <input type="text" id="locationName" [(ngModel)]="locationName" name="name" class="form-control" required>
       </div>
 
       <div class="col-md-6">
         <label for="code" class="form-label fw-semibold">Code</label>
-        <input type="text" id="code" [(ngModel)]="code" name="code" class="form-control" required>
+        <input type="text" id="code" [(ngModel)]="pays" name="pays" class="form-control" required>
       </div>
     </div>
 
@@ -27,8 +27,8 @@
   <h4 class="text-secondary mb-3">📌 Existing Locations</h4>
   <ul class="list-group">
     <li *ngFor="let loc of locations" class="list-group-item d-flex justify-content-between align-items-center">
-      <span>{{ loc.locationName }}</span>
-      <span class="badge bg-secondary">{{ loc.code }}</span>
+      <span>{{ loc.name }}</span>
+      <span class="badge bg-secondary">{{ loc.pays }}</span>
     </li>
   </ul>
 </div>
