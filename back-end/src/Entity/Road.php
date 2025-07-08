@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Uid\Ulid;
 
@@ -19,6 +20,7 @@ class Road
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['road:show'])]
     private  ?Ulid $id = null;
     
     #[ORM\ManyToOne(inversedBy: 'roads')]
@@ -26,18 +28,21 @@ class Road
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
+    #[Groups(['road-city:show'])]
     private ?City $start_city = null;
 
     #[ORM\ManyToOne(inversedBy: 'roads')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
-    #[Assert\Valid()]   
+    #[Assert\Valid()]
+    #[Groups(['road-city:show'])]
     private ?City $arrived_city = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Assert\NotBlank()]
     #[Assert\Time]
+    #[Groups(['road:show', 'road:create', 'road:edit'])]
     private ?\DateTimeInterface $estimated_time = null;
 
     /**

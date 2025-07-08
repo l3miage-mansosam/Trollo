@@ -35,7 +35,7 @@ class City
     #[Groups(['city:show'])]
     private ?Ulid $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Length(min: 3, max: 50)]
@@ -46,10 +46,10 @@ class City
         minLength: 3,
         example: 'Paris'
     )]
-    #[Groups(['city:show', 'city:create', 'city:edit'])]
+    #[Groups(['city:show','road-city:show', 'session-city:show','city:create', 'city:edit'])]
     private ?string $name = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Length(min: 3, max: 50)]
@@ -60,7 +60,7 @@ class City
         minLength: 3,
         example: 'France'
     )]
-    #[Groups(['city:show', 'city:create', 'city:edit'])]
+    #[Groups(['city:show','road-city:show', 'session-city:show', 'city:create', 'city:edit'])]
     private ?string $pays = null;
 
     /**
@@ -72,12 +72,19 @@ class City
         type: 'array',
         items: new OA\Items(ref: new Model(type: Road::class))
     )]
-    #[Groups(['city:show'])]
+//    #[Groups(['road:show'])]
     private Collection $roads;
+
+    /**
+     * @var Collection<int, Session>
+     */
+    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'start_city', orphanRemoval: true)]
+    private Collection $sessions;
 
     public function __construct()
     {
         $this->roads = new ArrayCollection();
+        $this->sessions = new ArrayCollection();
     }
 
     public function getId(): ?Ulid
@@ -133,6 +140,36 @@ class City
             // set the owning side to null (unless already changed)
             if ($road->getStartCity() === $this) {
                 $road->setStartCity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Session $session): static
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions->add($session);
+            $session->setStartCity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Session $session): static
+    {
+        if ($this->sessions->removeElement($session)) {
+            // set the owning side to null (unless already changed)
+            if ($session->getStartCity() === $this) {
+                $session->setStartCity(null);
             }
         }
 

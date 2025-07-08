@@ -16,9 +16,20 @@ class RoadRepository extends ServiceEntityRepository
         parent::__construct($registry, Road::class);
     }
 
-    //    /**
-    //     * @return Road[] Returns an array of Road objects
-    //     */
+        /**
+         * @return Road[] Returns an array of Road objects
+         */
+        public function findByStartCity($startCity): array
+        {
+            return $this->createQueryBuilder('r')
+                ->andWhere('r.start_city = :startCity')
+                ->setParameter('startCity', $startCity)
+                ->orderBy('r.name', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
     //    /**
     //     * @return Road[] Returns an array of Road objects
