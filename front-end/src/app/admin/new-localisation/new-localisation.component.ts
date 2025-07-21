@@ -54,10 +54,14 @@ export class NewLocalisationComponent {
     this.errorMessage = '';
 
     const newLocation = {
-      name: this.locationName,
-      pays: this.pays
+      name: this.locationName.trim(),
+      pays: this.pays.trim()
     };
     console.log(newLocation);
+    if (!newLocation.name || !newLocation.pays) {
+      this.errorMessage = 'the name and pays fields are required.';
+      return;
+    }
     const token = localStorage.getItem('userToken');
     if (!token) {
       this.errorMessage = 'Unauthorized. Please log in.';
@@ -72,8 +76,6 @@ export class NewLocalisationComponent {
       .subscribe({
         next: (location: ApiResponse<any>) => {
           this.successMessage = location?.message;
-          // this.locationName = location?.name;
-          // this.pays = location?.pays;
           this.fetchAllLocations();
         },
         error: () => {

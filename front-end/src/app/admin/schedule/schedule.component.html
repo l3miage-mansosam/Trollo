@@ -13,46 +13,60 @@
   <!-- FORMULAIRE DE POST -->
   <div *ngIf="showPostForm">
     <div class="card shadow-lg rounded-4 p-4">
-      <form (ngSubmit)="submitSchedule()">
+      <form (ngSubmit)="validateSchedule()">
         <div class="row g-4">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <label for="busName" class="form-label fw-semibold">Bus Name</label>
-            <input type="text" id="busName" class="form-control" [(ngModel)]="busSchedule.busName" name="busName" required>
-          </div>
-
-          <div class="col-md-6">
-            <label for="busVehicleNo" class="form-label fw-semibold">Bus Vehicle Number</label>
-            <input type="text" id="busVehicleNo" class="form-control" [(ngModel)]="busSchedule.busVehicleNo" name="busVehicleNo" required>
-          </div>
-
-          <div class="col-md-6">
-            <label for="fromLocation" class="form-label fw-semibold">From</label>
-            <select id="fromLocation" name="fromLocationId" class="form-select" [(ngModel)]="busSchedule.fromLocation" required>
-              <option value="">-- Select Departure City --</option>
-              @for (item of locationList; track $index) {
-                <option [value]="item.locationId">{{ item.locationName }}</option>
+            <select id="fromBus" name="fromBusId" class="form-select" [(ngModel)]="busSchedule.busId" (ngModelChange)="onBusChange($event)" required>
+              <option value="">-- Select Bus --</option>
+              @for (item of busList; track $index) {
+                <option [value]="item.id">{{ item.name }} | {{ item.immatriculation }}</option>
               }
             </select>
           </div>
 
           <div class="col-md-6">
-            <label for="toLocation" class="form-label fw-semibold">To</label>
-            <select id="toLocation" name="toLocationId" class="form-select" [(ngModel)]="busSchedule.toLocation" required>
-              <option value="">-- Select Destination City --</option>
-              @for (item of locationList; track $index) {
-                <option [value]="item.locationId">{{ item.locationName }}</option>
+            <label for="fromLocation" class="form-label fw-semibold">Road</label>
+            <select id="fromLocation" name="fromLocationId" class="form-select" [(ngModel)]="busSchedule.roadId" (ngModelChange)="onRoadChange($event)" required>
+              <option value="">-- Select Road --</option>
+              @for (item of roadList; track $index) {
+                <option [value]="item.id">{{ item.start_city.name }} --> {{ item.arrived_city.name }}</option>
               }
             </select>
           </div>
 
           <div class="col-md-6">
             <label for="departureTime" class="form-label fw-semibold">Departure Time</label>
-            <input type="datetime-local" id="departureTime" class="form-control" [(ngModel)]="busSchedule.departureTime" name="departureTime" required>
+            <input type="datetime-local" id="departureTime" class="form-control" [(ngModel)]="busSchedule.scheduleDate" name="departureTime" required>
           </div>
 
-          <div class="col-md-6">
-            <label for="arrivalTime" class="form-label fw-semibold">Arrival Time</label>
-            <input type="datetime-local" id="arrivalTime" class="form-control" [(ngModel)]="busSchedule.arrivalTime" name="arrivalTime" required>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Travel Time</label>
+            <div class="d-flex gap-4">
+              <div class="d-flex gap-2 align-items-center">
+                <input
+                  type="number"
+                  id="arrivalTime"
+                  class="form-control"
+                  [(ngModel)]="arrivalTimeOurs"
+                  name="arrivalTimeHour"
+                  required
+                />
+                <label for="arrivalTimeHour" class="fw-semibold text-center">Hours</label>
+              </div>
+              <div class="d-flex gap-2 align-items-center">
+                <input
+                  type="number"
+                  id="arrivalTime"
+                  class="form-control"
+                  [(ngModel)]="arrivalTimeMinutes"
+                  name="arrivalTimeMinute"
+                  placeholder="0"
+                  required
+                />
+                <label for="arrivalTimeMinute" class="fw-semibold">Minutes</label>
+              </div>
+            </div>
           </div>
 
           <div class="col-md-6">
@@ -62,7 +76,7 @@
 
           <div class="col-md-6">
             <label for="totalSeats" class="form-label fw-semibold">Total Seats</label>
-            <input type="number" id="totalSeats" class="form-control" [(ngModel)]="busSchedule.totalSeats" name="totalSeats" required>
+            <input type="number" id="totalSeats" class="form-control"  [value]="selectedBus.capacity" name="totalSeats" disabled >
           </div>
         </div>
 
@@ -73,43 +87,46 @@
       </form>
     </div>
   </div>
-<!-- LISTE DES BUS DU VENDEUR -->
-<div *ngIf="!showPostForm">
-  <div *ngFor="let bus of vendorBuses" class="card bus-card mb-4 p-4 shadow-sm rounded-4">
-    <div class="d-flex justify-content-between flex-column flex-md-row">
-      
-      <!-- Infos principales -->
-      <div class="mb-3 mb-md-0">
-        <h4 class="fw-bold text-dark mb-2">
-          🚌 {{ bus.busName }}
-          <span class="badge bg-secondary ms-2 fs-6">{{ bus.price }} €</span>
-        </h4>
-        <p class="mb-1"><strong>Vehicle No:</strong> {{ bus.busVehicleNo }}</p>
-        <p class="mb-1"><strong>Route:</strong> {{ bus.fromLocationName }} → {{ bus.toLocationName }}</p>
-      </div>
-      
-      <!-- Horaires -->
-      <div class="text-md-end text-muted">
-        <p class="mb-1"><i class="bi bi-clock"></i> <strong>Departure:</strong> {{ bus.departureTime | date:'short' }}</p>
-        <p class="mb-1"><i class="bi bi-clock-history"></i> <strong>Arrival:</strong> {{ bus.arrivalTime | date:'short' }}</p>
-<p class="mb-1">
-  <i class="bi bi-person-fill"></i>
-  <strong>Total Seats:</strong>
-   {{ availableSeatsMap[bus.scheduleId] ?? '?' }}/{{ bus.totalSeats }}
-</p>        <!-- Actions -->
-        <div class="d-flex gap-2 justify-content-end mt-2">
-          <button class="btn btn-outline-primary btn-sm" (click)="editSchedule(bus.scheduleId)">
-            <i class="bi bi-pencil-square"></i> Edit
-          </button>
-          <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(bus.scheduleId)">
-            <i class="bi bi-trash"></i> Delete
-          </button>
-        </div>
-      </div>
 
+<!-- LISTE DES BUS DU VENDEUR -->
+  <div *ngIf="!showPostForm">
+    <div *ngFor="let bus of vendorBuses" class="card bus-card mb-4 p-4 shadow-sm rounded-4">
+      <div class="d-flex justify-content-between flex-column flex-md-row">
+
+        <!-- Infos principales -->
+        <div class="mb-3 mb-md-0">
+          <h4 class="fw-bold text-dark mb-2">
+            🚌 {{ bus.busName }}
+            <span class="badge bg-secondary ms-2 fs-6">{{ bus.unit_price }} €</span>
+          </h4>
+          <p class="mb-1"><strong>Vehicle No:</strong> {{ bus.busVehicleNo }}</p>
+          <p class="mb-1"><strong>Route:</strong> {{ bus.start_city }} → {{ bus.arrived_city }}</p>
+        </div>
+
+        <!-- Horaires -->
+        <div class="text-md-end text-muted">
+          <p class="mb-1"><i class="bi bi-clock"></i> <strong>Departure:</strong> {{ bus.departureTime | date:'short' }}
+          </p>
+          <p class="mb-1"><i class="bi bi-clock-history"></i>
+            <strong>Arrival:</strong> {{ bus.arrivalTime | date:'short' }}</p>
+          <p class="mb-1">
+            <i class="bi bi-person-fill"></i>
+            <strong>Total Seats:</strong>
+            {{ availableSeatsMap[bus.id] ?? '?' }}/{{ bus.totalSeats }}
+          </p>        <!-- Actions -->
+          <div class="d-flex gap-2 justify-content-end mt-2">
+            <button class="btn btn-outline-primary btn-sm" (click)="editSchedule(bus.id)">
+              <i class="bi bi-pencil-square"></i> Edit
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(bus.id)">
+              <i class="bi bi-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
-</div>
 </div>
 <!-- Modal for Edit Schedule -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" aria-labelledby="editScheduleModalLabel" aria-hidden="true">
@@ -125,7 +142,7 @@
             <div class="col-md-6">
               <label for="editBusName" class="form-label fw-semibold">Bus Name</label>
               <input type="text" id="editBusName" class="form-control" [(ngModel)]="busScheduleEdit.busName" name="editBusName" required>
-     
+
             </div>
 
             <div class="col-md-6">
@@ -136,25 +153,25 @@
             </div>
             <div class="col-md-6">
               <label for="editFromLocation" class="form-label fw-semibold">From</label>
-              <select id="editFromLocation" name="editFromLocationId" class="form-select" [(ngModel)]="busScheduleEdit.fromLocation" required>
+              <select id="editFromLocation" name="editFromLocationId" class="form-select" [(ngModel)]="busScheduleEdit.start_city_id" required>
                 <option value="">-- Select Departure City --</option>
-                @for (item of locationList; track $index) {
+              <!--  @for (item of roadList; track $index) {
                   <option [value]="item.locationId">{{ item.locationName }}</option>
-                }
+                }-->
               </select>
             </div>
             <div class="col-md-6">
               <label for="editToLocation" class="form-label fw-semibold">To</label>
-              <select id="editToLocation" name="editToLocationId" class="form-select" [(ngModel)]="busScheduleEdit.toLocation" required>
+              <select id="editToLocation" name="editToLocationId" class="form-select" [(ngModel)]="busScheduleEdit.arrived_city_id" required>
                 <option value="">-- Select Destination City --</option>
-                @for (item of locationList; track $index) {
+                <!--@for (item of roadList; track $index) {
                   <option [value]="item.locationId">{{ item.locationName }}</option>
-                }
+                }-->
               </select>
             </div>
             <div class="col-md-6">
               <label for="editDepartureTime" class="form-label fw-semibold">Departure Time</label>
-              <input type="datetime-local" id="editDepartureTime" class="form-control" [(ngModel)]="busScheduleEdit.departureTime" name="editDepartureTime" required>
+<!--              <input type="datetime-local" id="editDepartureTime" class="form-control" [(ngModel)]="busScheduleEdit.departureTime" name="editDepartureTime" required>-->
             </div>
             <div class="col-md-6">
               <label for="editArrivalTime" class="form-label fw-semibold">Arrival Time</label>

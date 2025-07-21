@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { User } from './model/model';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 //RouterModule
 // import { NgModule } from '@angular/core';
@@ -67,18 +67,19 @@ export class AppComponent implements OnInit {
   navigateRegister(): void {
     this.route.navigate(['/register']);
   }
-  navigateVendorSchedule(): void { 
+  navigateVendorSchedule(): void {
     this.route.navigate(['/schedule']);
-  
+
   }
   navigateUserDashboard(): void {
-    
+
   }
     isHomePage(): boolean {
     return this.route.url === '/search' || this.route.url === '/';
   }
 loadTopRoutes(): void {
   this.http.get<any[]>('https://api.freeprojectapi.com/api/BusBooking/GetAvailableRoutes')
+  // this.http.get<any[]>('http://localhost:8000/')
     .subscribe({
       next: (data) => {
         const seen = new Set();

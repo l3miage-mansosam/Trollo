@@ -71,17 +71,17 @@ final class SessionController extends AbstractController
             $data = json_decode($request->getContent(), true);
 
             // Récupération des entités liées
-            $road = $roadRepository->find($data['road']);
-            $bus = $busRepository->find($data['bus']);
-            $startCity = $cityRepository->find($data['start_city']);
-            $arrivedCity = $cityRepository->find($data['arrived_city']);
+            $road = $roadRepository->find($data['roadId']);
+            $bus = $busRepository->find($data['busId']);
+            $startCity = $cityRepository->find($data['start_city_id']);
+            $arrivedCity = $cityRepository->find($data['arrived_city_id']);
 
-            if (!$road || !$bus || !$startCity || !$arrivedCity) {
+            if (!$road || !$bus ) {
                 return new JsonResponse(['error' => 'Entités liées non trouvées'], Response::HTTP_BAD_REQUEST);
             }
 
             // Suppression des IDs des entités liées avant la désérialisation
-            unset($data['road'], $data['bus'], $data['start_city'], $data['arrived_city']);
+            unset($data['road'], $data['bus']);
             $session = $this->serializer->denormalize($data, Session::class, 'json');
 
             // Attribution des entités liées

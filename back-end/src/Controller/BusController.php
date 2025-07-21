@@ -24,7 +24,7 @@ class BusController extends AbstractController
         private readonly ValidatorInterface $validator
     ) {}
 
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route(name: 'index', methods: ['GET'])]
     #[OA\Get(
         description: 'Retourne l’ensemble des bus enregistrés',
         summary: 'Liste des bus'
@@ -39,14 +39,19 @@ class BusController extends AbstractController
         $buses = $busRepository->findAll();
 
         return new JsonResponse(
-            $this->serializer->serialize($buses, 'json', ['groups' => ['bus:show']]),
+            $this->serializer->serialize([
+                    'success' => true,
+                    'message' => 'Bus récupérés avec succès',
+                    'data' => $buses,
+                ]
+                , 'json', ['groups' => ['bus:show']]),
             Response::HTTP_OK,
             [],
             true
         );
     }
 
-    #[Route('', name: 'create', methods: ['POST'])]
+    #[Route(name: 'create', methods: ['POST'])]
     #[OA\Post(
         description: 'Ajoute un nouveau bus à la flotte',
         summary: 'Créer un nouveau bus'
@@ -88,7 +93,11 @@ class BusController extends AbstractController
             $em->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($bus, 'json', ['groups' => ['bus:show']]),
+                $this->serializer->serialize([
+                    'success' => true,
+                    'message' => 'Bus créé avec succès',
+                    'data' => $bus,
+                ], 'json', ['groups' => ['bus:show']]),
                 Response::HTTP_CREATED,
                 [],
                 true
@@ -118,7 +127,11 @@ class BusController extends AbstractController
     public function show(Bus $bus): JsonResponse
     {
         return new JsonResponse(
-            $this->serializer->serialize($bus, 'json', ['groups' => ['bus:show']]),
+            $this->serializer->serialize([
+                'success' => true,
+                'message' => 'Bus récupré avec  succès',
+                'data' => $bus,
+            ], 'json', ['groups' => ['bus:show']]),
             Response::HTTP_OK,
             [],
             true
@@ -161,7 +174,11 @@ class BusController extends AbstractController
             $em->flush();
 
             return new JsonResponse(
-                $this->serializer->serialize($bus, 'json', ['groups' => ['bus:show']]),
+                $this->serializer->serialize([
+                    'success' => true,
+                    'message' => 'Bus mis à jour avec succès',
+                    'data' => $bus,
+                ], 'json', ['groups' => ['bus:show']]),
                 Response::HTTP_OK,
                 [],
                 true

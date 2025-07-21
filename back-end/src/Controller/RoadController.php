@@ -25,6 +25,13 @@ final class RoadController extends AbstractController
     }
 
     #[Route(name: 'index', methods: ['GET'])]
+    #[OA\Parameter(
+        name: 'StartCity',
+        description: 'Ville de départ du trajet',
+        in: 'path',
+        required: true,
+        schema: new OA\Schema(type: 'string', example: 'Grenoble')
+    )]
     #[OA\Response(
         response: 200,
         description: 'Retourne la liste des trajets',
@@ -33,11 +40,16 @@ final class RoadController extends AbstractController
             items: new OA\Items(ref: new Model(type: Road::class, groups: ['road:show', 'city:show', 'session:show']))
         )
     )]
-    public function index(RoadRepository $roadRepository): JsonResponse
+    public function index(RoadRepository $roadRepository, Request $request): JsonResponse
     {
-        $roads = $roadRepository->findAll();
+//        dd($request->get('startCity'), $request->get('arrivedCity'), $request->get('estimatedTime'));;
+        $roads = $request->get('startCity') !==null ? $roadRepository->findByStartCity($request->get('startCity')) : $roadRepository->findAll();
         return new JsonResponse(
-            $this->serializer->serialize($roads, 'json', ['groups' => ['road:show', 'city:show']]),
+            $this->serializer->serialize([
+                'success' => true,
+                'message' => 'Routes récupérées avec succès',
+                'data' =>$roads
+            ], 'json', ['groups' => ['road:show', 'road-city:show']]),
             Response::HTTP_OK,
             [],
             true

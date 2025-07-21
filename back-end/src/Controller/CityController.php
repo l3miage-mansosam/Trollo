@@ -41,7 +41,7 @@ final class CityController extends AbstractController
                     'message' => 'Villes récupérées avec succès',
                     'data' => $cities,
                 ]
-                , 'json', ['groups' => ['city:show']]),
+                , 'json', ['groups' => ['city:show', 'road:show']]),
             Response::HTTP_OK,
             [],
             true

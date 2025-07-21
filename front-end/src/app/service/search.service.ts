@@ -57,12 +57,26 @@ export class SearchService {
   getBookedSeats(scheduleId: number): Observable<number[]> {
     return this.http.get<number[]>(`${this.apiUrl}/getBookedSeats?shceduleId=${scheduleId}`);
   }
-  createBusSchedule(obj:BusSchedule){
-    return this.http.post(`${this.apiUrl}/PostBusSchedule`,obj)
+
+  createBusSchedule(obj: {
+    busId: string;
+    roadId: string;
+    estimated_time: string;
+    departure_date: Date;
+    unit_price: number;
+    start_city_id: string;
+    arrived_city_id: string
+  }, token: string){
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  return this.http.post<ApiResponse<any>>(`${this.apiUrlSymfony}/sessions`,obj, {headers})
   }
+
   updateBusSchedule(obj: BusSchedule): Observable<ApiResponse<null>> {
-  return this.http.put<ApiResponse<null>>(`${this.apiUrl}/PutBusSchedule`, obj);
-}
+    return this.http.put<ApiResponse<null>>(`${this.apiUrl}/PutBusSchedule`, obj);
+  }
   registerVendor(userObj: User): Observable<ApiResponse<null>> {
 
     return this.http.post<ApiResponse<null>>(`${this.apiUrl}/register`, userObj);
@@ -72,8 +86,12 @@ export class SearchService {
     return this.http.post(`${this.apiUrl}/PostBusVendor`,obj)
   }
 
-getSchedulesByVendorId(vendorId: number): Observable<ISearchBus[]> {
-  return this.http.get<ISearchBus[]>(`${this.apiUrl}/GetBusSchedules?vendorId=${vendorId}`);
+getSchedulesByVendorId(vendorId: number, token: string): Observable<ISearchBus[]> {
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  return this.http.get<ISearchBus[]>(`${this.apiUrl}/GetBusSchedules?vendorId=${vendorId}`, {headers});
 }
 
 deleteSchedule(scheduleId: number): Observable<ApiResponse<null>> {

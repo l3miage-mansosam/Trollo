@@ -17,20 +17,30 @@ export  interface PassengerInfo {
   gender: string;
 }
 export interface ISearchBus {
-    availableSeats: number;
-    totalSeats: number;
-    price: number;
-    arrivalTime: Date;
-    scheduleId: number;
-    departureTime: Date;
-    busName: string;
-    busVehicleNo: string;
-    fromLocationName: string;
-    toLocationName: string;
-    vendorName: string;
-    scheduleDate: Date;
-    vendorId: number;
+    bus: Bus;
+    // availableSeats: number;
+    /*totalSeats: number;*/
+    unit_price: number;
+    /*arrivalTime: Date;*/
+    id: number;
+    // departureTime: Date;
+    /*busName: string;
+    busVehicleNo: string;*/
+    start_city: {
+      id: string;
+      name: string;
+      pays: string;
+    };
+    arrived_city: {
+      id: string;
+      name: string;
+      pays: string;
+    };
+    // vendorName: string;
+    departure_date: Date;
+    // vendorId: number;
   }
+
   export interface IBusScheduleDetails {
     scheduleId: number;
     vendorId: string;
@@ -151,16 +161,33 @@ export class Vendor{
     this.refreshToken = "";
     this.refreshTokenExpiryTime = "";
   }
+}
 
+export class Bus {
+  id: string;
+  name: string;
+  immatriculation: string;
+  model: string;
+  capacity: number;
+
+  constructor() {
+    this.id = "";
+    this.name = "";
+    this.immatriculation = "";
+    this.model = "";
+    this.capacity = 0;
+  }
 }
 export class BusSchedule {
   scheduleId: number;
   vendorId: number;
+  busId: string;
   busName: string;
   busVehicleNo: string;
-  fromLocation: number;
-  toLocation: number;
-  departureTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
+  roadId: string
+  start_city_id: string;
+  arrived_city_id: string;
+  // departureTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   arrivalTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   scheduleDate: Date; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   price: number;
@@ -169,14 +196,50 @@ export class BusSchedule {
   constructor() {
     this.scheduleId = 0;
     this.vendorId = 0;
+    this.busId = "";
     this.busName = "";
     this.busVehicleNo = "";
-    this.fromLocation = 0;
-    this.toLocation = 0;
-    this.departureTime = "";
+    this.start_city_id = "";
+    this.arrived_city_id = "";
+    // this.departureTime = "";
+    this.roadId = "";
     this.arrivalTime = "";
     this.scheduleDate = new Date();
     this.price = 0;
     this.totalSeats = 0;
+  }
+}
+
+export class Road {
+  id: string;
+  start_city_id: string;
+  start_city: {
+    id: string;
+    name: string;
+    pays: string;
+  };
+  arrived_city_id: string;
+  arrived_city: {
+    id: string;
+    name: string;
+    pays: string;
+  };
+  estimated_time: string;
+
+  constructor() {
+    this.id = "";
+    this.start_city_id = "";
+    this.start_city = {
+      id: "",
+      name: "",
+      pays: ""
+    };
+    this.arrived_city_id = "";
+    this.arrived_city = {
+      id: "",
+      name: "",
+      pays: ""
+    };
+    this.estimated_time = "";
   }
 }

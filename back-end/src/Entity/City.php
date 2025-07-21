@@ -32,7 +32,7 @@ class City
         type: 'string',
         example: '01H2XJWN8D8RJXPTH2FWVG6PKG'
     )]
-    #[Groups(['city:show'])]
+    #[Groups(['city:show', 'road-city:show'])]
     private ?Ulid $id = null;
 
     #[ORM\Column(length: 50, nullable: false)]

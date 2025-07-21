@@ -100,9 +100,9 @@ export class SearchResultComponent implements OnInit {
         this.filteredResults = [...this.serachData];
 
         if (this.filter.price === 'asc') {
-            this.filteredResults.sort((a, b) => a.price - b.price);
+            this.filteredResults.sort((a, b) => a.unit_price - b.unit_price);
         } else if (this.filter.price === 'desc') {
-            this.filteredResults.sort((a, b) => b.price - a.price);
+            this.filteredResults.sort((a, b) => b.unit_price - a.unit_price);
         }
 
         if (this.filter.departure === 'asc') {
