@@ -110,7 +110,7 @@ final class SessionController extends AbstractController
         description: 'ID de la session',
         in: 'path',
         required: true,
-        schema: new OA\Schema(type: 'string', format: 'uuid')
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\Response(
         response: 200,
@@ -133,7 +133,7 @@ final class SessionController extends AbstractController
         description: 'ID de la session',
         in: 'path',
         required: true,
-        schema: new OA\Schema(type: 'string', format: 'uuid')
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\RequestBody(
         description: 'Données de la session à mettre à jour',
@@ -149,48 +149,50 @@ final class SessionController extends AbstractController
         CityRepository $cityRepository
     ): JsonResponse {
         try {
-            $data = json_decode($request->getContent(), true);
-            if (!$data) {
-                return new JsonResponse(['error' => 'Données JSON invalides'], Response::HTTP_BAD_REQUEST);
-            }
+            // Récupérez les données de la requête JSON
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            // Mise à jour des relations
-            if (isset($data['road'])) {
-                $road = $roadRepository->find($data['road']);
+            // Mettre à jour les propriétés de l'entité existante
+            if (isset($data['roadId'])) {
+                $road = $roadRepository->find($data['roadId']);
                 if (!$road) {
                     return new JsonResponse(['error' => 'Route non trouvée'], Response::HTTP_BAD_REQUEST);
                 }
                 $session->setRoad($road);
             }
-            if (isset($data['bus'])) {
-                $bus = $busRepository->find($data['bus']);
+
+            if (isset($data['busId'])) {
+                $bus = $busRepository->find($data['busId']);
                 if (!$bus) {
                     return new JsonResponse(['error' => 'Bus non trouvé'], Response::HTTP_BAD_REQUEST);
                 }
                 $session->setBus($bus);
             }
-            if (isset($data['start_city'])) {
-                $startCity = $cityRepository->find($data['start_city']);
+
+            if (isset($data['start_city_id'])) {
+                $startCity = $cityRepository->find($data['start_city_id']);
                 if (!$startCity) {
                     return new JsonResponse(['error' => 'Ville de départ non trouvée'], Response::HTTP_BAD_REQUEST);
                 }
                 $session->setStartCity($startCity);
             }
-            if (isset($data['arrived_city'])) {
-                $arrivedCity = $cityRepository->find($data['arrived_city']);
+
+            if (isset($data['arrived_city_id'])) {
+                $arrivedCity = $cityRepository->find($data['arrived_city_id']);
                 if (!$arrivedCity) {
                     return new JsonResponse(['error' => 'Ville d\'arrivée non trouvée'], Response::HTTP_BAD_REQUEST);
                 }
                 $session->setArrivedCity($arrivedCity);
             }
 
-            // Mise à jour des champs scalaires
             if (isset($data['unit_price'])) {
-                $session->setUnitPrice($data['unit_price']);
+                $session->setUnitPrice((float)$data['unit_price']);
             }
+
             if (isset($data['departure_date'])) {
                 $session->setDepartureDate(new \DateTime($data['departure_date']));
             }
+
             if (isset($data['estimated_time'])) {
                 $session->setEstimatedTime(new \DateTime($data['estimated_time']));
             }

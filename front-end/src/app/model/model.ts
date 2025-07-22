@@ -16,13 +16,13 @@ export  interface PassengerInfo {
   age: number;
   gender: string;
 }
-export interface ISearchBus {
+export class ISearchBus {
     bus: Bus;
     // availableSeats: number;
     /*totalSeats: number;*/
     unit_price: number;
-    /*arrivalTime: Date;*/
-    id: number;
+    estimated_time: string;
+    id: string;
     // departureTime: Date;
     /*busName: string;
     busVehicleNo: string;*/
@@ -36,9 +36,37 @@ export interface ISearchBus {
       name: string;
       pays: string;
     };
+    road: {
+      id:string;
+      start_city: {};
+      arrived_city: {};
+    };
     // vendorName: string;
-    departure_date: Date;
+    departure_date: string;
     // vendorId: number;
+
+    constructor() {
+      this.id = "";
+      this.estimated_time = "";
+      this.bus = new Bus();
+      this.unit_price = 0;
+      this.start_city = {
+        id: "",
+        name: "",
+        pays: ""
+      };
+      this.arrived_city = {
+        id: "",
+        name: "",
+        pays: ""
+      }
+      this.road = {
+        id:"",
+        start_city: this.start_city,
+        arrived_city: this.arrived_city
+      }
+      this.departure_date = "";
+    }
   }
 
   export interface IBusScheduleDetails {
@@ -179,32 +207,32 @@ export class Bus {
   }
 }
 export class BusSchedule {
-  scheduleId: number;
+  scheduleId: string;
   vendorId: number;
   busId: string;
   busName: string;
-  busVehicleNo: string;
+  // busVehicleNo: string;
   roadId: string
   start_city_id: string;
   arrived_city_id: string;
   // departureTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   arrivalTime: String; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
-  scheduleDate: Date; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
+  scheduleDate: string; // ISO string format (e.g. "2025-04-29T23:52:53.930Z")
   price: number;
   totalSeats: number;
 
   constructor() {
-    this.scheduleId = 0;
+    this.scheduleId = "";
     this.vendorId = 0;
     this.busId = "";
     this.busName = "";
-    this.busVehicleNo = "";
+    // this.busVehicleNo = "";
     this.start_city_id = "";
     this.arrived_city_id = "";
     // this.departureTime = "";
     this.roadId = "";
     this.arrivalTime = "";
-    this.scheduleDate = new Date();
+    this.scheduleDate = "";
     this.price = 0;
     this.totalSeats = 0;
   }

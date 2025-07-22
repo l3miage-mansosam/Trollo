@@ -20,7 +20,7 @@ class Road
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-    #[Groups(['road:show'])]
+    #[Groups(['road:show', 'road-city:show'])]
     private  ?Ulid $id = null;
     
     #[ORM\ManyToOne(inversedBy: 'roads')]

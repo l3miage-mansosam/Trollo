@@ -49,13 +49,13 @@ export class SearchResultComponent implements OnInit {
 
 
     ngDoCheck() {
-        this.applyFilters();
+        // this.applyFilters();
     }
     getSearchResult() {
         this.searchService.searchBus(this.searchObj.fromLocationId, this.searchObj.toLocationId, this.searchObj.date).subscribe((data: any) => {
                 console.log(data);
                 this.serachData = data;
-                this.applyFilters();
+                // this.applyFilters();
             }
         );
     }
@@ -96,7 +96,7 @@ export class SearchResultComponent implements OnInit {
         return parts.join(' ');
     }
 
-    applyFilters() {
+    /*applyFilters() {
         this.filteredResults = [...this.serachData];
 
         if (this.filter.price === 'asc') {
@@ -118,5 +118,5 @@ export class SearchResultComponent implements OnInit {
         if (this.filter.minSeats > 0) {
             this.filteredResults = this.filteredResults.filter(bus => bus.availableSeats >= this.filter.minSeats);
         }
-    }
+    }*/
 }
