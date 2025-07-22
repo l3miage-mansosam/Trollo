@@ -1,0 +1,12 @@
+<div class="chatbot-container">
+  <h2>Chatbot</h2>
+
+  <div class="chat-log">
+    <div *ngFor="let line of chatlog" [class.bus-info]="line.startsWith('Bus Name:') || line.startsWith('Company:') || line.startsWith('Departure Time:') || line.startsWith('Arrival Time:') || line.startsWith('Seats Available:') || line.startsWith('Price:')">
+      {{ line }}
+    </div>
+  </div>
+
+  <input [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Type your message..." />
+  <button (click)="sendMessage()">Send</button>
+</div>

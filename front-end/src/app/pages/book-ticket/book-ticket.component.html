@@ -1,0 +1,80 @@
+<!-- SEAT SELECTION -->
+<div class="container py-4">
+  <h3 class="mb-4 text-center">Bus Seat Selection</h3>
+
+  <div class="card shadow-sm rounded-4 p-4">
+    <div class="row">
+      <!-- LEFT : Contact Details -->
+      <div class="col-md-5 border-end">
+        <h5 class="mb-3">Passenger Details</h5>
+
+        <ng-container *ngFor="let item of selectedSeatsArray; index as i">
+          <div class="mb-4 border-bottom pb-3">
+            <h6 class="mb-3">Seat #{{ item.seatNo }}</h6>
+
+            <div class="mb-2">
+              <input type="text" class="form-control" [(ngModel)]="item.passengerName" placeholder="Name" name="name{{i}}" required>
+            </div>
+
+            <div class="mb-2">
+              <input type="number" class="form-control" [(ngModel)]="item.age" placeholder="Age" name="age{{i}}" required>
+            </div>
+
+            <div class="mb-2">
+              <label class="me-2">Gender:</label>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" [(ngModel)]="item.gender" [value]="'Male'" name="gender{{i}}" required>
+                <label class="form-check-label">Male</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" [(ngModel)]="item.gender" [value]="'Female'" name="gender{{i}}" required>
+                <label class="form-check-label">Female</label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- RIGHT : Seat Display -->
+      <div class="col-md-7">
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <ng-container *ngFor="let item of seatNumberList">
+            <button class="seat"
+                    [ngClass]="{ 'selected': isSelected(item), 'booked': isBooked(item) }"
+                    (click)="onSelect(item)">
+              {{ item }}
+            </button>
+          </ng-container>
+        </div>
+
+        <!-- Selected Seats Summary -->
+        <div class="mt-4 text-center">
+          <h6>Selected Seats</h6>
+          <div *ngIf="selectedSeatsArray.length === 0; else seatList">
+            <span class="badge bg-secondary">No seats selected</span>
+          </div>
+
+          <ng-template #seatList>
+            <ng-container *ngFor="let item of selectedSeatsArray">
+              <span class="badge bg-primary me-2">{{ item.seatNo }}</span>
+            </ng-container>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+         
+    @if(checkUSerLoggedIn()){ <button class="btn btn-primary" (click)="bookTicketBooking()">Book ticket</button>}
+        
+      @else {
+        <button class="btn btn-primary" (click)="openLoginModal()">Book ticket</button>
+  
+    
+      }
+       
+      <button class="btn btn-secondary ms-2" (click)="goBack()">Back</button>
+      
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+[
+    {
+      "from": "Kaya",
+      "to": "Djibo",
+      "departureTime": "09:30 AM",
+      "duration": "3h 45m",
+      "arrivalTime": "1:15 PM",
+      "seats": 36,
+      "price": "11500 DZD",
+      "busName": "Rosy Standard",
+      "company": "Rosy Teddy ABCD"
+    },
+    {
+      "from": "Kaya",
+      "to": "Tenkodogo",
+      "departureTime": "08:45 AM",
+      "duration": "5h 15m",
+      "arrivalTime": "2:00 PM",
+      "seats": 28,
+      "price": "16800 DZD",
+      "busName": "Royal VIP",
+      "company": "Royal Translink"
+    },
+    {
+      "from": "Banfora",
+      "to": "Fada N’Gourma",
+      "departureTime": "06:15 AM",
+      "duration": "10h 30m",
+      "arrivalTime": "4:45 PM",
+      "seats": 50,
+      "price": "22000 DZD",
+      "busName": "Intercity Standard",
+      "company": "Intercity"
+    },
+    {
+      "from": "Houndé",
+      "to": "Pouytenga",
+      "departureTime": "01:45 PM",
+      "duration": "4h 45m",
+      "arrivalTime": "6:30 PM",
+      "seats": 22,
+      "price": "16500 DZD",
+      "busName": "Dream Sleeper",
+      "company": "True-Dream-Travel"
+    }
+  ]
+  
