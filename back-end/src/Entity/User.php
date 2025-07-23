@@ -78,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         type: 'string',
         format: 'email',
         maxLength: 180,
-        example: 'jean.dupont@example.com'
+        example: 'admin.root@gmail.com'
     )]
     #[Groups(['user:show', 'user:create', 'user:edit', 'user:login'])]
     private ?string $email = null;
@@ -93,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         format: 'password',
         maxLength: 180,
         minLength: 6,
-        example: 'My_password.123'
+        example: 'adminroot'
     )]
     #[Groups(['user:create', 'user:edit', 'user:login', 'user:reset-password', 'user:change-password'])]
     private ?string $password = null;
@@ -120,7 +120,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         type: 'array',
         items: new OA\Items(ref: new Model(type: Booking::class))
     )]
-    #[Groups(['user:show'])]
     private Collection $bookings;
 
     public function __construct()

@@ -271,3 +271,23 @@ export class Road {
     this.estimated_time = "";
   }
 }
+
+export class Booking {
+  id: string;
+  user: User;
+  user_id: string;
+  session: ISearchBus;
+  session_id: string;
+  reservation_date: Date;
+  price: number;
+
+  constructor() {
+    this.id = "";
+    this.user = new User();
+    this.user_id = "";
+    this.session = new ISearchBus();
+    this.session_id = "";
+    this.reservation_date = new Date();
+    this.price = 0;
+  }
+}

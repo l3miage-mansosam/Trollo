@@ -9,7 +9,7 @@ import { OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-search-result',
-    imports: [DatePipe, FormsModule, CommonModule],
+    imports: [FormsModule, CommonModule],
     templateUrl: './search-result.component.html',
     styleUrl: './search-result.component.css'
 })

@@ -1,1 +1,84 @@
-<p>bookings works!</p>
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Chargement des réservations...</p>
+</div>
+
+<div *ngIf="!isLoading && bookings.length > 0">
+  <h2>Mes trajets réservés</h2>
+  <ul>
+    <li *ngFor="let booking of bookings">
+      <strong>Date réservation :</strong>
+      {{ booking.reservation_date | date: 'longDate' }}<br />
+      <strong>Date départ :</strong>
+      {{ booking.session.departure_date | date: 'longDate' }}
+      à {{ booking.session.departure_date | date: 'shortTime' }}<br />
+      <strong>Durée estimée :</strong>
+      {{ booking.session.estimated_time | date: 'HH:mm' }}<br />
+      <strong>Prix payé :</strong>
+      {{ booking.price }}€
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="!isLoading && bookings.length === 0">
+  <p>Aucune réservation trouvée.</p>
+</div>
+
+<!--<app-schedule (bookSession)="openBookingModal($event)"></app-schedule> -->
+
+<!-- Ajout du bouton `d-none` pour ouvrir la modal via ViewChild -->
+<button
+  type="button"
+  class="d-none"
+  data-bs-toggle="modal"
+  data-bs-target="#bookingModal"
+  #openBookingModalBtn
+></button>
+
+<!-- Modal pour effectuer la réservation -->
+<div
+  class="modal fade"
+  id="bookingModal"
+  tabindex="-1"
+  aria-labelledby="bookingModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookingModalLabel">
+          Réserver le trajet
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fermer"
+        ></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedSession">
+        <p><strong>Départ :</strong> {{ selectedSession.departure_date | date:'short' }}</p>
+        <p><strong>Durée estimée :</strong> {{ selectedSession.estimated_time | date:'HH:mm' }}</p>
+        <p><strong>Prix :</strong> {{ selectedSession.unit_price }} €</p>
+
+        <div class="form-group">
+          <label for="reservationDate">Date de réservation :</label>
+          <input
+            type="date"
+            id="reservationDate"
+            class="form-control"
+            [(ngModel)]="reservationDate"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Annuler
+        </button>
+        <button type="button" class="btn btn-success" (click)="confirmBooking()" data-bs-dismiss="modal">
+          Confirmer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

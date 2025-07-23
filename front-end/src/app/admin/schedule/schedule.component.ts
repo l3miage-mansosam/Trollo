@@ -1,7 +1,7 @@
-import {Component, inject} from '@angular/core';
+import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {BusSchedule, Search, ISearchBus, ApiResponse, Bus, Road} from '../../model/model';
+import {BusSchedule, Search, ISearchBus, ApiResponse, Bus, Road, User, Booking} from '../../model/model';
 import {SearchService} from '../../service/search.service';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -19,11 +19,14 @@ import {LoadingComponent} from '../../shared/loading/loading.component';
 export class ScheduleComponent implements OnInit {
   @ViewChild('openEditModalBtn') openEditModalBtn!: ElementRef;
   @ViewChild('openDeleteModalBtn') openDeleteModalBtn!: ElementRef;
+  @ViewChild('openBookingModalBtn') openBookingModalBtn!: ElementRef;
+  // @Output() bookSession = new EventEmitter<string>();
+
   http = inject(HttpClient);
   roadList: Road[] = [];
   busList: Bus[] = [];
   router = inject(Router);
-  showPostForm = true
+  showPostForm = false;
   vendorBuses: ISearchBus[] = [];
   availableSeatsMap: { [key: number]: number | undefined } = {};
   arrivalTimeOurs: number = 0;
@@ -38,6 +41,10 @@ export class ScheduleComponent implements OnInit {
   selectedBus: any = new Bus();
   selectedRoad: any = new Road();
   isLoading: boolean = true;
+  user: any;
+
+  seats:number = 1;
+  bookingData: Booking = new Booking();
 
   constructor(private searchService: SearchService) {
     const localStorageData = localStorage.getItem('user');
@@ -66,6 +73,7 @@ export class ScheduleComponent implements OnInit {
       totalSeats: 0
     };
 
+    this.user = JSON.parse(localStorage.getItem('user') ?? "");
   }
 
   errorMessage: string = '';
@@ -177,6 +185,7 @@ export class ScheduleComponent implements OnInit {
   ngOnInit() {
     this.getAllRoads();
     this.getAllBus();
+    this.toggleView();
   }
 
   getAllRoads() {
@@ -189,7 +198,6 @@ export class ScheduleComponent implements OnInit {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-
     this.http.get<ApiResponse<any>>('http://localhost:8000/api/roads', {headers})
       .subscribe({
         next: (roads: ApiResponse<any>) => {
@@ -244,7 +252,7 @@ export class ScheduleComponent implements OnInit {
       this.busScheduleEdit = new ISearchBus();
       this.resetForm();
     }
-    this.showPostForm = !this.showPostForm;
+    this.showPostForm = this.user.role.name === 'ADMIN' ? !this.showPostForm : false;
     this.getVendorBuses();
   }
 
@@ -254,7 +262,6 @@ export class ScheduleComponent implements OnInit {
       this.errorMessage = 'Unauthorized. Please log in.';
       return;
     }
-
     this.searchService.getSchedulesByVendorId(this.busSchedule.vendorId, token).subscribe({
       next: (schedules) => {
         console.log('Vendor buses:', schedules);
@@ -391,6 +398,35 @@ export class ScheduleComponent implements OnInit {
     });
   }
 
+  onBookClick(sessionId: string): void {
+    this.getScheduleById(sessionId);
 
+    this.openBookingModalBtn.nativeElement.click();
+  }
+
+  confirmBooking(): void {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      this.errorMessage = 'Unauthorized. Please log in.';
+      return;
+    }
+    const confData = {
+      user_id: this.user.id,
+      session_id: this.busSchedule.scheduleId,
+      reservation_date: this.toDatetimeLocalFormat(new Date(Date.now())),
+      // reservation_date: new Date(),
+      price: (this.busSchedule.price * this.seats)
+    }
+console.log(confData);
+    this.searchService.createBooking(confData, token).subscribe({
+      next: () => {
+        console.log('Réservation confirmée');
+        // tu peux déclencher une notification ou un refresh
+      },
+      error: (err) => {
+        console.error('Erreur de réservation :', err);
+      },
+    });
+  }
   protected readonly print = print;
 }

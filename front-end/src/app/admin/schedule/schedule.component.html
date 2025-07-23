@@ -1,12 +1,11 @@
 <app-loading *ngIf="isLoading"></app-loading>
 <div class="container my-5" *ngIf="!isLoading">
-
   <!-- Header + Toggle Button -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-primary">
-      {{ showPostForm ? '📝 Post a New Bus Schedule' : '🚌 My Bus Schedules' }}
+      {{ showPostForm ? busSchedule.scheduleId ?'📝 Update Bus Schedule' : '📝 Post a New Bus Schedule' : '🚌 Bus Schedules' }}
     </h2>
-    <button class="btn btn-outline-primary" (click)="toggleView()">
+    <button class="btn btn-outline-primary" (click)="toggleView()" *ngIf="user.role.name === 'ADMIN'">
       {{ showPostForm ? 'View My Buses' : 'Post New Bus' }}
     </button>
   </div>
@@ -88,7 +87,6 @@
       </form>
     </div>
   </div>
-
 <!-- LISTE DES BUS DU VENDEUR -->
   <div *ngIf="!showPostForm">
     <div *ngFor="let session of vendorBuses" class="card bus-card mb-4 p-4 shadow-sm rounded-4">
@@ -125,10 +123,13 @@
 <!--            {{ availableSeatsMap[bus.id] ?? '?' }}/{{ bus.totalSeats }}-->
           </p>        <!-- Actions -->
           <div class="d-flex gap-2 justify-content-end mt-2">
-            <button class="btn btn-outline-primary btn-sm" (click)="toggleView(session.id)">
+            <button class="btn btn-outline-primary btn-sm" (click)="onBookClick(session.id)">
+              <i class="bi bi-cart"></i> Book
+            </button>
+            <button class="btn btn-outline-warning btn-sm" (click)="toggleView(session.id)" *ngIf="user.role.name === 'ADMIN'">
               <i class="bi bi-pencil-square"></i> Edit
             </button>
-            <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(session.id)">
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(session.id)" *ngIf="user.role.name === 'ADMIN'">
               <i class="bi bi-trash"></i> Delete
             </button>
           </div>
@@ -174,3 +175,42 @@
 </button>
 </div>
 
+<!-- Bouton invisible pour déclencher le modal -->
+<button
+  type="button"
+  class="d-none"
+  data-bs-toggle="modal"
+  data-bs-target="#bookingModal"
+  #openBookingModalBtn
+></button>
+
+<!-- Modal de réservation -->
+<div
+  class="modal fade"
+  id="bookingModal"
+  tabindex="-1"
+  aria-labelledby="bookingModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookingModalLabel">Réserver le trajet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" *ngIf="busSchedule">
+        <p><strong>Départ :</strong> {{ busSchedule.scheduleDate | date:'short' }}</p>
+        <p><strong>Durée estimée :</strong> {{ arrivalTimeOurs }} : {{ arrivalTimeMinutes}}</p>
+        <div class="flex-row gap-2">
+          <label>Nombre de place</label>
+          <input type="number" min="1" max="10"  name="seats" [(ngModel)]="seats"   required>
+          <p><strong>Prix :</strong> {{ busSchedule.price * seats }} €</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button class="btn btn-success" (click)="confirmBooking()" data-bs-dismiss="modal">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>

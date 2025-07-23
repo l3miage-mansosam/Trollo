@@ -9,8 +9,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[Index(name: 'IDX_User_Booking', columns: ['user_id'])]
@@ -23,6 +25,12 @@ class Booking
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[OA\Property(
+        description: 'Identifiant unique du Bus (ULID)',
+        type: 'string',
+        example: '01H2XJWN8D8RJXPTH2FWVG6PKG'
+    )]
+    #[Groups(['booking:show', 'booking-user:show', 'booking-session:show'])]
     private  ?Ulid $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
@@ -30,6 +38,7 @@ class Booking
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
+    #[Groups(['booking:show'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
@@ -37,6 +46,7 @@ class Booking
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Valid()]
+    #[Groups(['booking:show', 'booking:edit', 'booking:create'])]
     private ?Session $session = null;
 
     /**
@@ -49,12 +59,24 @@ class Booking
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Assert\Date()]
+    #[OA\Property(
+        description: 'Date de réservation du bus. Format : YYYY-MM-DD',
+        type: 'string',
+        example: '2025-07-08'
+    )]
+    #[Groups(['booking:show', 'booking:edit', 'booking:create', 'booking-user:show, booking-session:show'])]
     private ?\DateTimeInterface $reservation_date = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\Positive()]
     #[Assert\GreaterThanOrEqual(value: 0)]
+    #[OA\Property(
+        description: 'prix total payé',
+        type: 'number',
+        example: 50.0
+    )]
+    #[Groups(['booking:show', 'booking:edit', 'booking:create', 'booking-user:show, booking-session:show'])]
     private ?float $price = null;
 
     public function __construct()
